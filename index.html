@@ -2,10 +2,66 @@
 <html lang="en">
 <head>
     <title>Enigma Website</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <h1>Hello Enigma</h1>
+
+    <h3>input your string</h3>
+    <label>Input the sentence you want to encrypt: </label>
+    <input type="text" id="engima-text-input" onkeydown="stringInput(this)">
+    <button id="showInput" onclick="buttonOnClick()">log input</button>
+    <br><br>
+
+    <text>------------------------------------------------</text>
+    <h3>input your plugboard pairings</h3>
+    <div id="pairings">
+        <div class="pairing-item">
+            <label>pairing 1:  </label>
+            <input type="text" id="pairing1">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 2:  </label>
+            <input type="text" id="pairing2">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 3:  </label>
+            <input type="text" id="pairing3">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 4:  </label>
+            <input type="text" id="pairing4">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 5:  </label>
+            <input type="text" id="pairing5">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 6:  </label>
+            <input type="text" id="pairing6">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 7:  </label>
+            <input type="text" id="pairing7">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 8:  </label>
+            <input type="text" id="pairing8">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 9:  </label>
+            <input type="text" id="pairing9">
+        </div>
+        <div class="pairing-item">
+            <label>pairing 10:</label>
+            <input type="text" id="pairing10">
+        </div>
+        <div>
+        <button onclick="setPlugboard()">Set Plugboard Settings</button>
+        </div>
+    </div>
+    <br>
 
     <script src="enigma.js"></script>
 </body>
