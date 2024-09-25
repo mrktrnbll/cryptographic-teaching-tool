@@ -27,6 +27,7 @@
 // 1 keybaord input
 
 let input = null;
+let plugboardSettings = null
 
 function stringInput(element) {
     if(event.key === 'Enter') {
@@ -43,7 +44,7 @@ function buttonOnClick() {
 // 2 switch board
 
 function setPlugboard() {
-    let plugboardSettings = document.querySelectorAll('#pairings input');
+    plugboardSettings = document.querySelectorAll('#pairings input');
 
     let lettersUsed = [];
     plugboardSettings.forEach((setting) => {
@@ -85,5 +86,33 @@ function setPlugboard() {
             i++
         }
         console.log(plugboardSettings);
+    }
+}
+
+// add output logic to show encrypted or decrypted info
+function encryptOrDecrypt() {
+    if (input == null) {
+        alert("You haven't added an input string.");
+    } if (plugboardSettings == null) {
+        alert("You haven't added plugboard settings.");
+    } else {
+        console.log(`scramble this please: ${input}`);
+        let inputCapitalised = input.toUpperCase();
+        let output = "";
+
+        for (let i=0; i < inputCapitalised.length; i++) {
+            let letter = inputCapitalised.charAt(i);
+            let letterFound = false
+            plugboardSettings.forEach((setting) => {
+                if (setting[0] == letter) {
+                    output = output + setting[1];
+                    letterFound = true;
+                }
+            })
+            if (!letterFound) {
+                output = output + letter;
+            }
+        }
+        console.log(`The encryption or decryption has returned ${output}`);
     }
 }
