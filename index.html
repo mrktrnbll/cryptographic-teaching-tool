@@ -65,6 +65,35 @@
     <button onclick="encryptOrDecrypt()">Encrypt or decrypt your input</button>
     <br>
 
+    <h3>Rotor Settings</h3>
+    <div id="rotors">
+        <div id="configs">
+            <select id="config1">
+                <option value="rotor1">I</option>
+                <option value="rotor2">II</option>
+                <option value="rotor3">III</option>
+            </select>
+            <select id="config2">
+                <option value="rotor1">I</option>
+                <option value="rotor2">II</option>
+                <option value="rotor3">III</option>
+            </select>
+            <select id="config3">
+                <option value="rotor1">I</option>
+                <option value="rotor2">II</option>
+                <option value="rotor3">III</option>
+            </select>
+        </div>
+        <div id="rotation-values">
+            <input type="number" id="rotation-value-1">
+            <input type="number" id="rotation-value-2">
+            <input type="number" id="rotation-value-3">
+        </div>
+        <button onclick="setUpRotors()">Set rotor settings</button>
+    </div>
+
+
+
     <script src="enigma.js"></script>
 </body>
 </html>

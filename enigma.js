@@ -75,10 +75,6 @@ function setPlugboard() {
     if (lettersUsed.length != 20) {
         alert("Please enter valid plugboard settings.");
     } else {
-// dont need this? if letter not included then letter maps to letter.
-//        let lettersUsedSet = new Set(lettersUsed);
-//        let alphabetSet = new Set('abcdefghijklmnopqrstuvwxyz'.split(''));
-//        let lettersNotUsed = lettersUsed.prototype.difference(alphabetSet)
         plugboardSettings = [];
         for (let i = 0; i < 20; i++) {
             plugboardSettings.push(`${lettersUsed[i]}${lettersUsed[i+1]}`)
@@ -100,6 +96,8 @@ function encryptOrDecrypt() {
         let inputCapitalised = input.toUpperCase();
         let output = "";
 
+        // TODO: refactor to function that take input letter and gives output letter
+        // -- rather than current take entire string output entire string
         for (let i=0; i < inputCapitalised.length; i++) {
             let letter = inputCapitalised.charAt(i);
             let letterFound = false
@@ -115,4 +113,35 @@ function encryptOrDecrypt() {
         }
         console.log(`The encryption or decryption has returned ${output}`);
     }
+}
+
+
+// 3 - rotor settings
+
+// create three rotor settings
+const rotor1 = "AT QS WE RD FY GZ UC HX VJ LI OP KM NB";
+const rotor2 = "MJ UI OK PL NA ZV XC BS DG FH YQ TW ER";
+const rotor3 = "AB ZX VS CW QR EF DL MY TU IG JP OK HN";
+
+// take combination of rotors and values of they rotors between 1 and 26
+// set up counters for those settings, with right most being smallest unit and left most being largest
+
+function setUpRotors() {
+    // grab inputs
+    selectRotors = document.querySelectorAll("#rotors #configs select");
+    rotorValues = document.querySelectorAll("#rotors #rotation-values input")
+    rotors = [];
+    for (let i = 0; i<3; i++) {
+
+        if (selectRotors[i].value.match("rotor1")) {
+            rotors.push([rotor1, rotorValues[i].value]);
+        }
+        if (selectRotors[i].value.match("rotor2")) {
+            rotors.push([rotor2, rotorValues[i].value]);
+        }
+        if (selectRotors[i].value.match("rotor3")) {
+            rotors.push([rotor3, rotorValues[i].value]);
+        }
+    }
+    console.log(rotors);
 }
