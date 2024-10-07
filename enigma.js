@@ -30,7 +30,7 @@ let input = null;
 let plugboardSettings = null
 
 function stringInput(element) {
-    if(event.key === 'Enter') {
+    if (event.key === 'Enter') {
         input = element.value;
         element.value = "";
     }
@@ -119,29 +119,109 @@ function encryptOrDecrypt() {
 // 3 - rotor settings
 
 // create three rotor settings
-const rotor1 = "AT QS WE RD FY GZ UC HX VJ LI OP KM NB";
-const rotor2 = "MJ UI OK PL NA ZV XC BS DG FH YQ TW ER";
-const rotor3 = "AB ZX VS CW QR EF DL MY TU IG JP OK HN";
+const rotor1Unchanged = "ATQSWERDFYGZUCHXVJLIOPKMNB";
+const rotor2Unchanged = "MJUIOKPLNAZVXCBSDGFHYQTWER";
+const rotor3Unchanged = "ABZXVSCWQREFDLMYTUIGJPOKHN";
+// define reflector
+const reflector = "MARKTUNBLQPOWEKIYSJVCZHXGF"
 
 // take combination of rotors and values of they rotors between 1 and 26
 // set up counters for those settings, with right most being smallest unit and left most being largest
+
+let rotors = {};
 
 function setUpRotors() {
     // grab inputs
     selectRotors = document.querySelectorAll("#rotors #configs select");
     rotorValues = document.querySelectorAll("#rotors #rotation-values input")
-    rotors = [];
     for (let i = 0; i<3; i++) {
-
-        if (selectRotors[i].value.match("rotor1")) {
-            rotors.push([rotor1, rotorValues[i].value]);
+        rotorConfig = selectRotors[i].value;
+        if (i == 2) {
+            rotors["rotor1"] = {"roman": rotorConfig, "value": rotorValues[i].value - 1};
         }
-        if (selectRotors[i].value.match("rotor2")) {
-            rotors.push([rotor2, rotorValues[i].value]);
+        if (i == 1) {
+            rotors["rotor2"] = {"roman": rotorConfig, "value": rotorValues[i].value - 1};
         }
-        if (selectRotors[i].value.match("rotor3")) {
-            rotors.push([rotor3, rotorValues[i].value]);
+        if (i == 0) {
+            rotors["rotor3"] = {"roman": rotorConfig, "value": rotorValues[i].value - 1};
         }
     }
     console.log(rotors);
 }
+
+let rotor1 = rotor1Unchanged;
+let rotor2 = rotor2Unchanged;
+let rotor3 = rotor3Unchanged;
+
+function getAllRotorOrientations() {
+    rotor1Orientations = [rotor1Unchanged];
+    rotor2Orientations = [rotor2Unchanged];
+    rotor3Orientations = [rotor3Unchanged];
+
+    for (let i = 0; i<25; i++) {
+        rotor1 = rotor1.charAt(25) + rotor1.slice(0, 25);
+        rotor2 = rotor2.charAt(25) + rotor2.slice(0, 25);
+        rotor3 = rotor3.charAt(25) + rotor3.slice(0, 25);
+        rotor1Orientations.push(rotor1);
+        rotor2Orientations.push(rotor2);
+        rotor3Orientations.push(rotor3);
+    }
+}
+
+function addCounter() {
+    if (rotors.rotor1.value < 25) {
+        rotors.rotor1.value += 1;
+    } else {
+        rotors.rotor1.value = 0;
+        if (rotors.rotor2.value < 25) {
+            rotors.rotor2.value += 1;
+        } else {
+            rotors.rotor2.value = 0;
+            if (rotors.rotor3.value < 25) {
+                rotors.rotor3.value += 1;
+            } else {
+                rotors.rotor3.value = 0;
+            }
+        }
+    }
+}
+
+function switchLetter(letter, rotorString) {
+    let index = rotorString.indexOf(letter);
+    console.log(index + "index")
+    if (index % 2 == 0) {
+        return rotorString.charAt(index+1);
+    } else {
+        return rotorString.charAt(index-1);
+    }
+}
+
+function passThroughRotor(letter) {
+    let encryptedLetter = letter;
+    Object.values(rotors).forEach((rotor) => {
+        if (rotor.roman.match("rotor1")) {
+            encryptedLetter = switchLetter(encryptedLetter, rotor1Orientations[rotor.value]);
+        }
+        if (rotor.roman.match("rotor2")) {
+            encryptedLetter = switchLetter(encryptedLetter, rotor2Orientations[rotor.value]);
+        }
+        if (rotor.roman.match("rotor3")) {
+            encryptedLetter = switchLetter(encryptedLetter, rotor3Orientations[rotor.value]);
+        }
+    })
+    console.log(encryptedLetter + "letter");
+    return encryptedLetter;
+}
+
+function runRotorEncryption() {
+    console.log(rotors);
+    let encryptedMessage = ""
+    for (let i = 0; i < input.length; i ++) {
+        // pass through all three rotors.
+        const encryptedLetter = passThroughRotor(input.charAt(i));
+        encryptedMessage = encryptedMessage + encryptedLetter;
+        addCounter();
+    }
+    console.log(encryptedMessage);
+}
+
