@@ -1,0 +1,21 @@
+#pairings {
+    display: flex;
+    flex-direction: column;
+}
+
+#rotors {
+    display: flex;
+    flex-direction: column;
+}
+
+#configs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#rotation-values {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
