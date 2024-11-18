@@ -1,0 +1,11 @@
+Model Information:
+* title:	Enigma Machine
+* source:	https://sketchfab.com/3d-models/enigma-machine-30b85c037a164174a109ad6f002b9c47
+* author:	ASHISH (https://sketchfab.com/3dmodelsmith)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Enigma Machine" (https://sketchfab.com/3d-models/enigma-machine-30b85c037a164174a109ad6f002b9c47) by ASHISH (https://sketchfab.com/3dmodelsmith) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

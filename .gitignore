@@ -1,1 +1,4 @@
 .idea
+three/node_modules
+three/.tool-versions
+three/package-lock.json
