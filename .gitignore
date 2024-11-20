@@ -1,4 +1,6 @@
 .idea
-three/node_modules
-three/.tool-versions
-three/package-lock.json
+.tool-versions
+
+enigma-app/.next
+enigma-app/pnpm-lock.yaml
+enigma-app/node_modules

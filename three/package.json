@@ -1,9 +1,0 @@
-{
-  "type": "module",
-  "scripts": {
-    "dev": "node main.js"
-  },
-  "dependencies": {
-    "three": "^0.170.0"
-  }
-}
