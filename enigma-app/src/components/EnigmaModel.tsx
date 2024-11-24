@@ -3,6 +3,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
 
 
 function EnigmaModel() {
@@ -25,6 +27,12 @@ function EnigmaModel() {
         renderer.setSize(window.innerWidth, window.innerHeight);
         containerRef.current.appendChild(renderer.domElement);
 
+        const controls = new OrbitControls( camera, renderer.domElement );
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.1;
+        controls.rotateSpeed = 0.5;
+        controls.zoomSpeed = 0.5;
+
         const light = new THREE.DirectionalLight(whiteBackground, 1);
         light.position.set(-3, 2, 2);
         scene.add(light);
@@ -39,6 +47,7 @@ function EnigmaModel() {
 
         const animate = () => {
             requestAnimationFrame(animate);
+            controls.update();
             renderer.render(scene, camera);
         };
         animate();
@@ -47,6 +56,7 @@ function EnigmaModel() {
             renderer.dispose();
         };
     }, []);
+
 
     return (
         <div ref={containerRef}
