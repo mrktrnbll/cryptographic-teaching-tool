@@ -19,6 +19,10 @@ function EnigmaModel() {
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(background);
 
+        //dev mode
+        const axesHelper = new THREE.AxesHelper( 5 );
+        scene.add( axesHelper );
+
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(-3, 1, 2);
         camera.rotation.set(0, -1, 0);
@@ -41,7 +45,8 @@ function EnigmaModel() {
         loader.load('enigma-machine/machine.gltf',
             gltf => {
                 scene.add(gltf.scene);
-                gltf.scene.scale.set(5, 5, 5);
+                gltf.scene.position.set(0,-1,0)
+                gltf.scene.scale.set(7, 7, 7);
                 setLoadingProgress(false);
             });
 
