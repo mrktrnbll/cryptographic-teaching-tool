@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'White Rabbit', sans-serif;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -12,10 +18,4 @@
     --background: rgb(229, 231, 235);
     --foreground: #ededed;
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }

@@ -10,8 +10,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 function EnigmaModel() {
     const [loadingProgress, setLoadingProgress] = useState(true);
 
-    const background = 0x8b95aa
-    const whiteBackground = 0xffffff
+    const background = 0xE5E1DA
+    const whiteBackground = 0xFFFFFF
 
     const containerRef = useRef();
 
@@ -66,14 +66,15 @@ function EnigmaModel() {
     return (
         <div ref={containerRef}
              style={{width: '100vw', height: '100vh'}}>
-            {loadingProgress && <p style={{
+            {loadingProgress && <h3 style={{
                 position: "absolute",
                 width: '10vw',
                 height: '10vw',
                 top: "50dvh",
                 left: "46dvw",
+                color: "black",
                 zIndex: 1
-            }}>Loading! Hang tight :)</p>}
+            }}>Loading! Hang tight :)</h3>}
         </div>
     )
 }
