@@ -3,16 +3,49 @@
 import React, {useEffect, useRef, useState} from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three';
+import {eventListeners} from "@popperjs/core";
 
 
 
 export default function EnigmaModel({camera, controls, renderer}) {
     const [loadingProgress, setLoadingProgress] = useState(true);
+    let lamps = null
 
     const background = 0xE5E1DA
     const whiteBackground = 0xFFFFFF
 
     const containerRef = useRef();
+
+    function lightUpLamp(mesh, color = 0xffff00, duration = 500) {
+        if (!mesh) return;
+
+        if (!mesh.material.isCloned) {
+            mesh.material = mesh.material.clone();
+            mesh.material.isCloned = true;
+        }
+
+        mesh.material.emissive.setHex(color);
+
+        setTimeout(() => {
+            mesh.material.emissive.setHex(0x000000);
+        }, duration);
+    }
+
+    function getLamps(gltf) {
+        const lamps = {};
+        const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+
+        letters.forEach(letter => {
+            const lampName = `lamp_${letter}`;
+            const lampObject = gltf.scene.getObjectByName(lampName);
+            if (lampObject) {
+                lamps[letter.toUpperCase()] = lampObject;
+            }
+        });
+
+        return lamps;
+    }
+
 
     useEffect(() => {
         const scene = new THREE.Scene();
@@ -39,21 +72,6 @@ export default function EnigmaModel({camera, controls, renderer}) {
         light.position.set(-3, 2, 2);
         scene.add(light);
 
-        function lightUpLamp(mesh, color = 0xffff00, duration = 500) {
-            if (!mesh) return;
-
-            if (!mesh.material.isCloned) {
-                mesh.material = mesh.material.clone();
-                mesh.material.isCloned = true;
-            }
-
-            mesh.material.emissive.setHex(color);
-
-            setTimeout(() => {
-                mesh.material.emissive.setHex(0x000000);
-            }, duration);
-        }
-
         const loader = new GLTFLoader();
         loader.load('lamp_changed/lamp_ammended.gltf',
             gltf => {
@@ -61,21 +79,11 @@ export default function EnigmaModel({camera, controls, renderer}) {
                 gltf.scene.position.set(0,-1,0)
                 gltf.scene.scale.set(7, 7, 7);
 
-                const lampR = gltf.scene.getObjectByName('lamp_r');
+                lamps = getLamps(gltf);
 
-                if (lampR) {
-                    console.log(lampR.material);
-                    lampR.material.emissive = new THREE.Color(0x000000);
-                    lampR.material.emissiveIntensity = 1.0;
+                if (lamps) {
+                    console.log("got lamps", lamps);
                 }
-
-                setTimeout(() => {
-                    console.log("trying to light up");
-                    if (lampR) {
-                        console.log("lighting up lamp got the lamp_a");
-                        lightUpLamp(lampR, 0xffff00, 1000);
-                    }
-                }, 6000);
 
                 setLoadingProgress(false);
             });
@@ -92,6 +100,12 @@ export default function EnigmaModel({camera, controls, renderer}) {
         };
     }, [camera, controls]);
 
+    addEventListener("keydown", (event) => {
+        console.log(event.key);
+        if (lamps && lamps[event.key.toUpperCase()]) {
+            lightUpLamp(lamps[event.key.toUpperCase()]);
+        }
+    });
 
     return (
         <div ref={containerRef}
