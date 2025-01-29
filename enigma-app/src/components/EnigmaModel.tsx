@@ -41,12 +41,44 @@ function EnigmaModel() {
         light.position.set(-3, 2, 2);
         scene.add(light);
 
+        function lightUpLamp(mesh, color = 0xffff00, duration = 500) {
+            if (!mesh) return;
+
+            if (!mesh.material.isCloned) {
+                mesh.material = mesh.material.clone();
+                mesh.material.isCloned = true;
+            }
+
+            mesh.material.emissive.setHex(color);
+
+            setTimeout(() => {
+                mesh.material.emissive.setHex(0x000000);
+            }, duration);
+        }
+
         const loader = new GLTFLoader();
-        loader.load('enigma-machine/machine.gltf',
+        loader.load('lamp_changed/lamp_ammended.gltf',
             gltf => {
                 scene.add(gltf.scene);
                 gltf.scene.position.set(0,-1,0)
                 gltf.scene.scale.set(7, 7, 7);
+
+                const lampR = gltf.scene.getObjectByName('lamp_r');
+
+                if (lampR) {
+                    console.log(lampR.material);
+                    lampR.material.emissive = new THREE.Color(0x000000);
+                    lampR.material.emissiveIntensity = 1.0;
+                }
+
+                setTimeout(() => {
+                    console.log("trying to light up");
+                    if (lampR) {
+                        console.log("lighting up lamp got the lamp_a");
+                        lightUpLamp(lampR, 0xffff00, 1000);
+                    }
+                }, 6000);
+
                 setLoadingProgress(false);
             });
 
