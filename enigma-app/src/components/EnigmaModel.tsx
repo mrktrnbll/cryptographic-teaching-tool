@@ -357,7 +357,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         }
         if (clickedObject === arrows.rotor1Down) {
             minusAdd = minusAddRotorValue(rotorValues[0], -1);
-            rv = [minusAdd, rotorValues[0], rotorValues[2]]
+            rv = [minusAdd, rotorValues[1], rotorValues[2]]
             updateTextOnPlane(rotorPlanes.rotor1, minusAdd);
             setRotorValues(rv)
         } else if (clickedObject === arrows.rotor2Down) {
