@@ -3,13 +3,16 @@
 import React, {useEffect, useRef, useState} from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three';
-import {eventListeners} from "@popperjs/core";
 
 
 
 export default function EnigmaModel({camera, controls, renderer}) {
     const [loadingProgress, setLoadingProgress] = useState(true);
-    let lamps = null
+    let lamps = null;
+    let rotors = null;
+    let rotorPlanes = {}
+
+    const ROTOR_HEIGHT = 0.003
 
     const background = 0xE5E1DA
     const whiteBackground = 0xFFFFFF
@@ -46,19 +49,94 @@ export default function EnigmaModel({camera, controls, renderer}) {
         return lamps;
     }
 
+    function getRotors(gltf) {
+        const rotors = {};
+        const rotorNames = "1 2 3".split(" ");
+
+        rotorNames.forEach(rotorName => {
+            const rotorKey = `rotor${rotorName}`;
+            const rotorObject = gltf.scene.getObjectByName(rotorKey);
+            if (rotorObject) {
+                rotors[rotorKey] = rotorObject;
+                const rotorBox = new THREE.Box3().setFromObject(rotorObject);
+                const size = new THREE.Vector3();
+                rotorBox.getSize(size);
+                console.log('Rotor dimensions:', size);
+            }
+        });
+
+        return rotors;
+    }
+
+    function createTextPlane(textValue) {
+        const size = 512;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, size, size);
+
+        ctx.fillStyle = '#939393';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '300px sans-serif';
+        ctx.fillText(textValue, size / 2, size / 2);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+        });
+
+        const planeGeo = new THREE.PlaneGeometry(0.015, 0.015);
+        const planeMesh = new THREE.Mesh(planeGeo, material);
+
+        return planeMesh;
+    }
+
+    function createDefaultRotorValuePlanes() {
+        let rotorPositionSpace = -0.029
+        for (const [key, rotor] of Object.entries(rotors)) {
+            const labelPlane = createTextPlane("0");
+            labelPlane.rotation.z = THREE.MathUtils.degToRad(-90)
+            rotor.add(labelPlane);
+            labelPlane.position.set(0, rotorPositionSpace, ROTOR_HEIGHT);
+
+            rotorPlanes[key] = labelPlane;
+            rotorPositionSpace += 0.029;
+        }
+    }
+
+    function updateTextOnPlane(plane, newRotorValue) {
+        const material = plane.material;
+        const texture = material.map;
+        const canvas = texture.image;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '300px sans-serif';
+        ctx.fillText(String(newRotorValue), canvas.width / 2, canvas.height / 2);
+
+        texture.needsUpdate = true;
+    }
 
     useEffect(() => {
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(background);
 
-        //dev mode
-        const env = process.env.NODE_ENV
-        if (env != "development") {
-            const axesHelper = new THREE.AxesHelper(5);
-            scene.add(axesHelper);
-        }
-
-        camera.position.set(-3, 1, 2);
+        // dev mode - remove if needed
+        const axesHelper = new THREE.AxesHelper(5);
+        scene.add(axesHelper);
+        camera.position.set(-6, 6, 4);
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         containerRef.current.appendChild(renderer.domElement);
@@ -77,14 +155,23 @@ export default function EnigmaModel({camera, controls, renderer}) {
             gltf => {
                 scene.add(gltf.scene);
                 gltf.scene.position.set(0,-1,0)
-                gltf.scene.scale.set(7, 7, 7);
+                gltf.scene.scale.set(0.3, 0.3, 0.3);
 
                 lamps = getLamps(gltf);
+                rotors = getRotors(gltf);
 
                 if (lamps) {
                     console.log("got lamps", lamps);
                 }
 
+                if (rotors) {
+                    createDefaultRotorValuePlanes();
+                    setTimeout(() => {
+                        updateTextOnPlane(rotorPlanes.rotor1, 1);
+                        updateTextOnPlane(rotorPlanes.rotor2, 2);
+                        updateTextOnPlane(rotorPlanes.rotor3, 3);
+                    });
+                }
                 setLoadingProgress(false);
             });
 
