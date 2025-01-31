@@ -3,8 +3,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three';
-import {set} from "yaml/dist/schema/yaml-1.1/set";
-
 
 
 export default function EnigmaModel({camera, controls, renderer}) {
@@ -178,7 +176,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
         scene.add(lightRight);
     }
 
-    function createArrowMesh(width = 0.2, height = 0.2, depth = 0.01, color = 0xff2828) {
+    function createArrowMesh(color = 0xff2828, width = 0.2, height = 0.2, depth = 0.01) {
         const shape = new THREE.Shape();
 
         shape.moveTo(0, 0);
@@ -208,6 +206,34 @@ export default function EnigmaModel({camera, controls, renderer}) {
         return arrowMesh;
     }
 
+    function addAllRotorArrows(scene) {
+        let arrowDict = {};
+        let zPostionDelimeter = -0.06;
+        const arrowName = {0: "rotor3Down", 1: "rotor2Down", 2: "rotor1Down", 3: "rotor1Up", 4: "rotor2Up", 5: "rotor3Up"};
+        for (let i = 0; i <= 5; i++) {
+            let addArrow = createArrowMesh();
+            addArrow.rotateX(THREE.MathUtils.degToRad(90));
+            if (i < 3) {
+                addArrow.position.set(1.18, 1.25, zPostionDelimeter);
+            } else if (i == 3) {
+                zPostionDelimeter = -0.06;
+                addArrow = createArrowMesh(0x669547);
+                addArrow.position.set(1.75, 1.25, zPostionDelimeter);
+                addArrow.rotateX(THREE.MathUtils.degToRad(90));
+                addArrow.rotateY(THREE.MathUtils.degToRad(180));
+            }
+            else {
+                addArrow = createArrowMesh(0x669547);
+                addArrow.position.set(1.75, 1.25, zPostionDelimeter);
+                addArrow.rotateY(THREE.MathUtils.degToRad(180));
+                addArrow.rotateX(THREE.MathUtils.degToRad(-90));
+            }
+            scene.add(addArrow);
+            arrowDict[arrowName[i]] = addArrow;
+            zPostionDelimeter += -0.5;
+        }
+        return arrowDict
+    }
 
     useEffect(() => {
         const scene = new THREE.Scene();
@@ -255,12 +281,8 @@ export default function EnigmaModel({camera, controls, renderer}) {
                 if (plugs && plugWires) {
                     animatePlugboard();
                 }
-
-                const addArrow = createArrowMesh();
-                setArrow(addArrow);
-                addArrow.position.set(1.18, 1.25, -0.05);
-                addArrow.rotateX(THREE.MathUtils.degToRad(90));
-                scene.add(addArrow);
+                const arrowDict = addAllRotorArrows(scene);
+                setArrow(arrowDict)
 
                 setLoadingProgress(false);
             });
