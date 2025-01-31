@@ -5,7 +5,7 @@ import { Drawer, Box, Typography, Divider, Button } from '@mui/material';
 
 export default function FloatingDrawer() {
   return (
-    <div className="font-whiteRabbit" style={{ position: 'absolute', width: '100vw', height: '100vh'}}>
+    <div className="font-whiteRabbit" style={{ position: 'absolute', width: '20vw', height: '100vh'}}>
       <Drawer
           variant="permanent"
           anchor="right"

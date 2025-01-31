@@ -3,6 +3,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three';
+import {set} from "yaml/dist/schema/yaml-1.1/set";
 
 
 
@@ -13,6 +14,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
     let plugs = null;
     let plugWires = null;
     let rotorPlanes = {}
+    const [arrow, setArrow] = useState();
 
     const ROTOR_HEIGHT = 0.003
 
@@ -63,6 +65,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
                 const rotorBox = new THREE.Box3().setFromObject(rotorObject);
                 const size = new THREE.Vector3();
                 rotorBox.getSize(size);
+                console.log(size)
             }
         });
 
@@ -132,10 +135,11 @@ export default function EnigmaModel({camera, controls, renderer}) {
         let rotorPositionSpace = -0.029
         for (const [key, rotor] of Object.entries(rotors)) {
             const labelPlane = createTextPlane("0");
-            labelPlane.rotation.z = THREE.MathUtils.degToRad(-90)
+            labelPlane.rotation.z = THREE.MathUtils.degToRad(-90);
             rotor.add(labelPlane);
             labelPlane.position.set(0, rotorPositionSpace, ROTOR_HEIGHT);
 
+            console.log(rotor.position);
             rotorPlanes[key] = labelPlane;
             rotorPositionSpace += 0.029;
         }
@@ -174,6 +178,37 @@ export default function EnigmaModel({camera, controls, renderer}) {
         scene.add(lightRight);
     }
 
+    function createArrowMesh(width = 0.2, height = 0.2, depth = 0.01, color = 0xff2828) {
+        const shape = new THREE.Shape();
+
+        shape.moveTo(0, 0);
+
+        shape.lineTo(0, height);
+
+        shape.lineTo(-width, height / 2);
+
+        shape.lineTo(0, 0);
+
+        const extrudeSettings = {
+            depth: depth,
+            bevelEnabled: true,
+            bevelThickness: 0.01,
+            bevelSize: 0.01,
+            bevelSegments: 2,
+            steps: 1
+        };
+
+        const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        geometry.computeBoundingBox();
+
+        const material = new THREE.MeshStandardMaterial({ color });
+
+        const arrowMesh = new THREE.Mesh(geometry, material);
+
+        return arrowMesh;
+    }
+
+
     useEffect(() => {
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(background);
@@ -197,7 +232,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
         loader.load('lamp_changed/lamp_ammended.gltf',
             gltf => {
                 scene.add(gltf.scene);
-                gltf.scene.position.set(0,-1,0)
+                gltf.scene.position.set(0,-1,0);
                 gltf.scene.scale.set(0.3, 0.3, 0.3);
 
                 lamps = getLamps(gltf);
@@ -221,6 +256,12 @@ export default function EnigmaModel({camera, controls, renderer}) {
                     animatePlugboard();
                 }
 
+                const addArrow = createArrowMesh();
+                setArrow(addArrow);
+                addArrow.position.set(1.18, 1.25, -0.05);
+                addArrow.rotateX(THREE.MathUtils.degToRad(90));
+                scene.add(addArrow);
+
                 setLoadingProgress(false);
             });
 
@@ -236,11 +277,53 @@ export default function EnigmaModel({camera, controls, renderer}) {
         };
     }, [camera, controls]);
 
-    addEventListener("keydown", (event) => {
-        if (lamps && lamps[event.key.toUpperCase()]) {
-            lightUpLamp(lamps[event.key.toUpperCase()]);
+    useEffect(() => {
+        addEventListener("keydown", (event) => {
+            if (lamps && lamps[event.key.toUpperCase()]) {
+                lightUpLamp(lamps[event.key.toUpperCase()]);
+            }
+        });
+        return () => window.removeEventListener("keydown", () => {});
+    }, []);
+
+
+    useEffect(() => {
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        function onPointerDown(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+
+            if (!arrow) {
+                console.log("Arrow not loaded yet!");
+                return;
+            }
+
+            const intersects = raycaster.intersectObject(arrow, true);
+
+            if (intersects.length > 0) {
+                const clickedObject = intersects[0].object;
+                if (clickedObject === arrow) {
+                    onArrowLeftClick();
+                }
+            }
         }
-    });
+
+        addEventListener('pointerdown', onPointerDown);
+        return () => window.removeEventListener('pointerdown', onPointerDown);
+    }, [arrow]);
+
+    function onArrowLeftClick() {
+        console.log("Left arrow clicked!");
+    }
+    function onArrowRightClick() {
+        console.log("Right arrow clicked!");
+    }
+
 
     return (
         <div ref={containerRef}
