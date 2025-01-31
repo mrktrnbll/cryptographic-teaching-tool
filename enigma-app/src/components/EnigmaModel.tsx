@@ -3,16 +3,19 @@
 import React, {useEffect, useRef, useState} from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three';
+import {Object3D, Object3DEventMap} from "three";
+import {min} from "@popperjs/core/lib/utils/math";
 
 
 export default function EnigmaModel({camera, controls, renderer}) {
     const [loadingProgress, setLoadingProgress] = useState(true);
+    const [arrows, setArrows] = useState();
+    const [rotorPlanes, setRotorPlanes] = useState();
+    const [rotorValues, setRotorValues] = useState();
     let lamps = null;
     let rotors = null;
     let plugs = null;
     let plugWires = null;
-    let rotorPlanes = {}
-    const [arrow, setArrow] = useState();
 
     const ROTOR_HEIGHT = 0.003
 
@@ -63,7 +66,6 @@ export default function EnigmaModel({camera, controls, renderer}) {
                 const rotorBox = new THREE.Box3().setFromObject(rotorObject);
                 const size = new THREE.Vector3();
                 rotorBox.getSize(size);
-                console.log(size)
             }
         });
 
@@ -131,16 +133,18 @@ export default function EnigmaModel({camera, controls, renderer}) {
 
     function createDefaultRotorValuePlanes() {
         let rotorPositionSpace = -0.029
+        let newRotorPlanes = {}
         for (const [key, rotor] of Object.entries(rotors)) {
-            const labelPlane = createTextPlane("0");
+            const labelPlane = createTextPlane(1);
             labelPlane.rotation.z = THREE.MathUtils.degToRad(-90);
             rotor.add(labelPlane);
             labelPlane.position.set(0, rotorPositionSpace, ROTOR_HEIGHT);
 
-            console.log(rotor.position);
-            rotorPlanes[key] = labelPlane;
+            newRotorPlanes[key] = labelPlane;
             rotorPositionSpace += 0.029;
         }
+        setRotorValues([1,1,1])
+        return newRotorPlanes
     }
 
     function updateTextOnPlane(plane, newRotorValue) {
@@ -209,7 +213,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
     function addAllRotorArrows(scene) {
         let arrowDict = {};
         let zPostionDelimeter = -0.06;
-        const arrowName = {0: "rotor3Down", 1: "rotor2Down", 2: "rotor1Down", 3: "rotor1Up", 4: "rotor2Up", 5: "rotor3Up"};
+        const arrowName = {0: "rotor1Down", 1: "rotor2Down", 2: "rotor3Down", 3: "rotor1Up", 4: "rotor2Up", 5: "rotor3Up"};
         for (let i = 0; i <= 5; i++) {
             let addArrow = createArrowMesh();
             addArrow.rotateX(THREE.MathUtils.degToRad(90));
@@ -266,23 +270,19 @@ export default function EnigmaModel({camera, controls, renderer}) {
                 [plugs, plugWires] = getPlugBoard(gltf);
 
                 if (lamps) {
-                    console.log("got lamps", lamps);
+
                 }
 
                 if (rotors) {
-                    createDefaultRotorValuePlanes();
-                    setTimeout(() => {
-                        updateTextOnPlane(rotorPlanes.rotor1, 1);
-                        updateTextOnPlane(rotorPlanes.rotor2, 2);
-                        updateTextOnPlane(rotorPlanes.rotor3, 3);
-                    });
+                    const newRotorPlanes = createDefaultRotorValuePlanes();
+                    setRotorPlanes(newRotorPlanes);
                 }
 
                 if (plugs && plugWires) {
                     animatePlugboard();
                 }
                 const arrowDict = addAllRotorArrows(scene);
-                setArrow(arrowDict)
+                setArrows(arrowDict)
 
                 setLoadingProgress(false);
             });
@@ -320,32 +320,72 @@ export default function EnigmaModel({camera, controls, renderer}) {
 
             raycaster.setFromCamera(mouse, camera);
 
-            if (!arrow) {
+            if (!arrows) {
                 console.log("Arrow not loaded yet!");
                 return;
             }
 
-            const intersects = raycaster.intersectObject(arrow, true);
+            const intersects = raycaster.intersectObjects(Object.values(arrows), true);
 
             if (intersects.length > 0) {
-                const clickedObject = intersects[0].object;
-                if (clickedObject === arrow) {
-                    onArrowLeftClick();
+                const clickedObject: Object3D<Object3DEventMap> = intersects[0].object;
+                if (Object.values(arrows).includes(clickedObject)) {
+                    handleArrowClick(clickedObject);
                 }
             }
         }
 
         addEventListener('pointerdown', onPointerDown);
         return () => window.removeEventListener('pointerdown', onPointerDown);
-    }, [arrow]);
+    }, [arrows, rotorValues]);
 
-    function onArrowLeftClick() {
-        console.log("Left arrow clicked!");
-    }
-    function onArrowRightClick() {
-        console.log("Right arrow clicked!");
+    function minusAddRotorValue(rotorValue: number, minusAdd: number) {
+        if (rotorValue + minusAdd < 1) {
+            return 26;
+        } else if (rotorValue + minusAdd > 26) {
+            return 1;
+        } else {
+            return rotorValue + minusAdd;
+        }
     }
 
+    function handleArrowClick(clickedObject: Object3D<Object3DEventMap>) {
+        let rv: [number];
+        let minusAdd: number;
+        if (clickedObject === arrows.rotor1Down) {
+            minusAdd = minusAddRotorValue(rotorValues[0], -1);
+            rv = [minusAdd, rotorValues[0], rotorValues[2]]
+            updateTextOnPlane(rotorPlanes.rotor1, minusAdd);
+            setRotorValues(rv)
+        } else if (clickedObject === arrows.rotor2Down) {
+            minusAdd = minusAddRotorValue(rotorValues[1], -1)
+            rv = [rotorValues[0], minusAdd, rotorValues[2]]
+            updateTextOnPlane(rotorPlanes.rotor2,minusAdd);
+            setRotorValues(rv)
+        } else if (clickedObject === arrows.rotor3Down) {
+            minusAdd = minusAddRotorValue(rotorValues[2], -1)
+            rv = [rotorValues[0], rotorValues[1], minusAdd]
+            updateTextOnPlane(rotorPlanes.rotor3, minusAdd);
+            setRotorValues(rv)
+        } else if (clickedObject === arrows.rotor1Up) {
+            minusAdd = minusAddRotorValue(rotorValues[0], 1)
+            rv = [minusAdd, rotorValues[1], rotorValues[2]]
+            updateTextOnPlane(rotorPlanes.rotor1, minusAdd);
+            setRotorValues(rv)
+        } else if (clickedObject === arrows.rotor2Up) {
+            minusAdd = minusAddRotorValue(rotorValues[1], 1)
+            rv = [rotorValues[0], minusAdd, rotorValues[2]]
+            updateTextOnPlane(rotorPlanes.rotor2, minusAdd);
+            setRotorValues(rv)
+        } else if (clickedObject === arrows.rotor3Up) {
+            minusAdd = minusAddRotorValue(rotorValues[2], 1)
+            rv = [rotorValues[0], rotorValues[1], minusAdd]
+            updateTextOnPlane(rotorPlanes.rotor3, minusAdd);
+            setRotorValues(rv)
+        } else {
+            console.log("Unknown arrow clicked!");
+        }
+    }
 
     return (
         <div ref={containerRef}
