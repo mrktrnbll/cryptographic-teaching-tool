@@ -1,21 +1,24 @@
 'use client'
 
 import React, {useEffect, useRef, useState} from "react";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from 'three';
-import {Object3D, Object3DEventMap} from "three";
-import {min} from "@popperjs/core/lib/utils/math";
+import {Mesh, Object3D, Object3DEventMap} from 'three';
+
+// @ts-expect-error - no types for this package
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+// @ts-expect-error - no types for this package
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 
 
-export default function EnigmaModel({camera, controls, renderer}) {
+export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
     const [loadingProgress, setLoadingProgress] = useState(true);
     const [arrows, setArrows] = useState();
     const [rotorPlanes, setRotorPlanes] = useState();
-    const [rotorValues, setRotorValues] = useState();
-    let lamps = null;
-    let rotors = null;
-    let plugs = null;
-    let plugWires = null;
+    const [rotorValues, setRotorValues] = useState([1,1,1]);
+    let lamps: { [s: string]: Mesh; };
+    let rotors: { [s: string]: Mesh; };
+    let plugs: Mesh;
+    let plugWires: Mesh;
 
     const ROTOR_HEIGHT = 0.003
 
@@ -24,7 +27,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
 
     const containerRef = useRef();
 
-    function lightUpLamp(mesh, color = 0xffff00, duration = 500) {
+    function lightUpLamp(mesh:Mesh, color = 0xffff00, duration = 500) {
         if (!mesh) return;
 
         if (!mesh.material.isCloned) {
@@ -39,13 +42,13 @@ export default function EnigmaModel({camera, controls, renderer}) {
         }, duration);
     }
 
-    function getLamps(gltf) {
+    function getLamps(gltf: unknown) {
         const lamps = {};
         const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
         letters.forEach(letter => {
             const lampName = `lamp_${letter}`;
-            const lampObject = gltf.scene.getObjectByName(lampName);
+            const lampObject: Mesh = gltf.scene.getObjectByName(lampName);
             if (lampObject) {
                 lamps[letter.toUpperCase()] = lampObject;
             }
@@ -54,7 +57,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
         return lamps;
     }
 
-    function getRotors(gltf) {
+    function getRotors(gltf: unknown) {
         const rotors = {};
         const rotorNames = "1 2 3".split(" ");
 
@@ -101,12 +104,13 @@ export default function EnigmaModel({camera, controls, renderer}) {
         // wants to see it.
     }
 
-    function createTextPlane(textValue) {
+    function createTextPlane(textValue: number) {
         const size = 512;
         const canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
         const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, size, size);
@@ -115,7 +119,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = '300px sans-serif';
-        ctx.fillText(textValue, size / 2, size / 2);
+        ctx.fillText(String(textValue), size / 2, size / 2);
 
         const texture = new THREE.CanvasTexture(canvas);
         texture.needsUpdate = true;
@@ -126,16 +130,15 @@ export default function EnigmaModel({camera, controls, renderer}) {
         });
 
         const planeGeo = new THREE.PlaneGeometry(0.015, 0.015);
-        const planeMesh = new THREE.Mesh(planeGeo, material);
-
-        return planeMesh;
+        return new THREE.Mesh(planeGeo, material);
     }
 
     function createDefaultRotorValuePlanes() {
         let rotorPositionSpace = -0.029
-        let newRotorPlanes = {}
+        const newRotorPlanes = {}
         for (const [key, rotor] of Object.entries(rotors)) {
             const labelPlane = createTextPlane(1);
+            if (!labelPlane) return;
             labelPlane.rotation.z = THREE.MathUtils.degToRad(-90);
             rotor.add(labelPlane);
             labelPlane.position.set(0, rotorPositionSpace, ROTOR_HEIGHT);
@@ -147,7 +150,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
         return newRotorPlanes
     }
 
-    function updateTextOnPlane(plane, newRotorValue) {
+    function updateTextOnPlane(plane: unknown, newRotorValue: number) {
         const material = plane.material;
         const texture = material.map;
         const canvas = texture.image;
@@ -165,7 +168,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
         texture.needsUpdate = true;
     }
 
-    function addFourLightSources(scene) {
+    function addFourLightSources(scene: THREE.Scene) {
         const lightTop = new THREE.DirectionalLight(whiteBackground, 1);
         lightTop.position.set(-3, 2, 2);
         scene.add(lightTop);
@@ -204,14 +207,11 @@ export default function EnigmaModel({camera, controls, renderer}) {
         geometry.computeBoundingBox();
 
         const material = new THREE.MeshStandardMaterial({ color });
-
-        const arrowMesh = new THREE.Mesh(geometry, material);
-
-        return arrowMesh;
+        return new THREE.Mesh(geometry, material);
     }
 
-    function addAllRotorArrows(scene) {
-        let arrowDict = {};
+    function addAllRotorArrows(scene: THREE.Scene) {
+        const arrowDict = {};
         let zPostionDelimeter = -0.06;
         const arrowName = {0: "rotor1Down", 1: "rotor2Down", 2: "rotor3Down", 3: "rotor1Up", 4: "rotor2Up", 5: "rotor3Up"};
         for (let i = 0; i <= 5; i++) {
@@ -260,7 +260,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
 
         const loader = new GLTFLoader();
         loader.load('lamp_changed/lamp_ammended.gltf',
-            gltf => {
+            (gltf: unknown) => {
                 scene.add(gltf.scene);
                 gltf.scene.position.set(0,-1,0);
                 gltf.scene.scale.set(0.3, 0.3, 0.3);
@@ -306,14 +306,14 @@ export default function EnigmaModel({camera, controls, renderer}) {
             }
         });
         return () => window.removeEventListener("keydown", () => {});
-    }, []);
+    }, [lamps]);
 
 
     useEffect(() => {
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        function onPointerDown(event) {
+        function onPointerDown(event: { clientX: number; clientY: number; }) {
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -337,7 +337,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
 
         addEventListener('pointerdown', onPointerDown);
         return () => window.removeEventListener('pointerdown', onPointerDown);
-    }, [arrows, rotorValues]);
+    }, [camera, handleArrowClick, renderer.domElement, arrows, rotorValues]);
 
     function minusAddRotorValue(rotorValue: number, minusAdd: number) {
         if (rotorValue + minusAdd < 1) {
@@ -350,8 +350,11 @@ export default function EnigmaModel({camera, controls, renderer}) {
     }
 
     function handleArrowClick(clickedObject: Object3D<Object3DEventMap>) {
-        let rv: [number];
+        let rv: [number, number, number];
         let minusAdd: number;
+        if (!arrows || !rotorPlanes) {
+            return;
+        }
         if (clickedObject === arrows.rotor1Down) {
             minusAdd = minusAddRotorValue(rotorValues[0], -1);
             rv = [minusAdd, rotorValues[0], rotorValues[2]]
