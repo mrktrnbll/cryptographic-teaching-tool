@@ -10,6 +10,8 @@ export default function EnigmaModel({camera, controls, renderer}) {
     const [loadingProgress, setLoadingProgress] = useState(true);
     let lamps = null;
     let rotors = null;
+    let plugs = null;
+    let plugWires = null;
     let rotorPlanes = {}
 
     const ROTOR_HEIGHT = 0.003
@@ -61,11 +63,39 @@ export default function EnigmaModel({camera, controls, renderer}) {
                 const rotorBox = new THREE.Box3().setFromObject(rotorObject);
                 const size = new THREE.Vector3();
                 rotorBox.getSize(size);
-                console.log('Rotor dimensions:', size);
             }
         });
 
         return rotors;
+    }
+
+    function getPlugBoard(gltf) {
+        plugWires = gltf.scene.getObjectByName("plug_wires");
+        plugs = gltf.scene.getObjectByName("plugs");
+        return [plugs, plugWires];
+    }
+
+    function animatePlugboard() {
+        if (!plugs.material.isCloned) {
+            plugs.material = plugs.material.clone();
+            plugs.material.isCloned = true;
+        }
+
+        if (!plugWires.material.isCloned) {
+            plugs.material = plugs.material.clone();
+            plugs.material.isCloned = true;
+        }
+
+        plugWires.material.emissive.setHex(0xff1616);
+        plugs.material.emissive.setHex(0xe1984f);
+
+        setTimeout(() => {
+            plugs.material.emissive.setHex(0x000000);
+            plugWires.material.emissive.setHex(0x000000);
+        }, 2000);
+
+        // TODO: got to add this function as a call when "walkthrough"
+        // wants to see it.
     }
 
     function createTextPlane(textValue) {
@@ -129,6 +159,21 @@ export default function EnigmaModel({camera, controls, renderer}) {
         texture.needsUpdate = true;
     }
 
+    function addFourLightSources(scene) {
+        const lightTop = new THREE.DirectionalLight(whiteBackground, 1);
+        lightTop.position.set(-3, 2, 2);
+        scene.add(lightTop);
+        const lightBack = new THREE.DirectionalLight(whiteBackground, 1);
+        lightBack.position.set(8, -6, 0);
+        scene.add(lightBack);
+        const lightLeft = new THREE.DirectionalLight(whiteBackground, 1);
+        lightLeft.position.set(0, 0, 6);
+        scene.add(lightLeft);
+        const lightRight = new THREE.DirectionalLight(whiteBackground, 1);
+        lightRight.position.set(0, 0, -6);
+        scene.add(lightRight);
+    }
+
     useEffect(() => {
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(background);
@@ -146,9 +191,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
         controls.rotateSpeed = 0.5;
         controls.zoomSpeed = 0.5;
 
-        const light = new THREE.DirectionalLight(whiteBackground, 1);
-        light.position.set(-3, 2, 2);
-        scene.add(light);
+        addFourLightSources(scene);
 
         const loader = new GLTFLoader();
         loader.load('lamp_changed/lamp_ammended.gltf',
@@ -159,6 +202,7 @@ export default function EnigmaModel({camera, controls, renderer}) {
 
                 lamps = getLamps(gltf);
                 rotors = getRotors(gltf);
+                [plugs, plugWires] = getPlugBoard(gltf);
 
                 if (lamps) {
                     console.log("got lamps", lamps);
@@ -172,6 +216,11 @@ export default function EnigmaModel({camera, controls, renderer}) {
                         updateTextOnPlane(rotorPlanes.rotor3, 3);
                     });
                 }
+
+                if (plugs && plugWires) {
+                    animatePlugboard();
+                }
+
                 setLoadingProgress(false);
             });
 
@@ -188,7 +237,6 @@ export default function EnigmaModel({camera, controls, renderer}) {
     }, [camera, controls]);
 
     addEventListener("keydown", (event) => {
-        console.log(event.key);
         if (lamps && lamps[event.key.toUpperCase()]) {
             lightUpLamp(lamps[event.key.toUpperCase()]);
         }
