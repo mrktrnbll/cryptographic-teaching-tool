@@ -2,6 +2,24 @@
 
 ## Education Professional Focus Group
 
+Semi-structured interview with 3 staff members at Auchenharvie Academy - 18/02/2025.
+
+**General:**
+- How was your overall experience using the 3D tool?
+- How would you rate the *content* you were exposed to when using the 3D tool?
+- Was the *content* well organised and delivered in a digestable way?
+- Was 3D tool meet your expectations?
+- Was the *learning objectives* of the tool clearly stated and achievable?
+
+Same questions as user experiment from to set scene.
+
+**Application For Students**
+- How useful do you believe this will be for students in a class room over convential teaching method?
+    - Engagement
+    - Knowledge Retainment
+- Do you think students will learn better from the navigation and naration feature?
+    - Could this be changed to better facilitate learning?
+
 
 
 ## Experimental Design
