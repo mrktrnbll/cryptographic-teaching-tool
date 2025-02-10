@@ -20,8 +20,8 @@ export const NOTCHES: Record<string, string> = {
 } // hehe
 
 export const REFLECTOR: Rotor = {
-    forward: "MARKTUNBLQPOWEKIYSJVCZHXGF", // hehe
-    backward: "FGXHZCVJSYIKEWOPQLBNUTKRAM", // hehe
+    forward: "MARKTUNBLQWEY", // hehe
+    backward: "CDFGHIJOPSVXZ",
 }
 
 export const PLUGBOARD_SETTINGS: Rotor = {
