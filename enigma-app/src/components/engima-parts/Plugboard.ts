@@ -20,4 +20,4 @@ export const runLetterThroughPlugboard: (letter: string) => string = (letter: st
 //  - test runLetterThroughPlugboard(), refactored so works similar as Reflector passthrough funciton
 
 
-console.log(runLetterThroughPlugboard("A", true)) // "tested" and works
+console.log(runLetterThroughPlugboard("A")) // "tested" and works
