@@ -24,13 +24,13 @@ export default function Home() {
 
   // TODO: Remove this later
   // Testing the rotor class
-  const rotor_m: Rotor  = new Rotor("1", "A", null, null)
-  const rotor_l: Rotor  = new Rotor("2", "A", rotor_m, null)
-
-  for (let i = 0; i < 30; i++) {
-      console.log(rotor_l.rotate());
-  }
-  console.log(rotor_m.rotate());
+  // const rotor_m: Rotor  = new Rotor("1", "A", null, null)
+  // const rotor_l: Rotor  = new Rotor("2", "A", rotor_m, null)
+  //
+  // for (let i = 0; i < 30; i++) {
+  //     console.log(rotor_l.rotate());
+  // }
+  // console.log(rotor_m.rotate());
 
   return (
       <div style={{position: 'relative', width: '100vw', height: '100vh'}}>
