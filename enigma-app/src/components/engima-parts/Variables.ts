@@ -25,8 +25,8 @@ export const REFLECTOR: Rotor = {
 }
 
 export const PLUGBOARD_SETTINGS: Rotor = {
-    forward: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    backward: "TBCDEFGHIJKLMNOPQRSTUVWXYA",
+    forward: "ABCDEFGHIJKLM",
+    backward: "NOPQRSTUVWXYZ",
 } // default setting - empty plugboard (no connections)
 
 export const ALPHABET: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
