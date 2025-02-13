@@ -7,11 +7,11 @@ export const printPlugboardSettings: () => void = () => {
 
 export const runLetterThroughPlugboard: (letter: string) => string = (letter: string) => {
     if (PLUGBOARD_SETTINGS.forward.includes(letter)) {
-        return REFLECTOR.backward.charAt(REFLECTOR.forward.indexOf(letter));
+        return PLUGBOARD_SETTINGS.backward.charAt(PLUGBOARD_SETTINGS.forward.indexOf(letter));
     } else if (PLUGBOARD_SETTINGS.backward.includes(letter)) {
-        return REFLECTOR.forward.charAt(REFLECTOR.backward.indexOf(letter));
+        return PLUGBOARD_SETTINGS.forward.charAt(PLUGBOARD_SETTINGS.backward.indexOf(letter));
     } else {
-        return "why the fuck";
+        return "Not Alphabetical";
     }
 }
 
