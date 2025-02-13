@@ -1,4 +1,4 @@
-import {ROTOR_PAIRINGS, NOTCHES, ALPHABET} from "@/components/engima-parts/Variables";
+import {ROTOR_PAIRINGS, NOTCHES, ALPHABET} from "src/components/engima-parts/Variables";
 
 export const printRotors: () => void = () => {
     console.log(ROTOR_PAIRINGS, NOTCHES);
@@ -32,16 +32,16 @@ export class Rotor {
     rotate(): void {
         if (this.nextRotor && this.rotorNumber==this.changeNextRotor) {
             console.log("step");
+            console.log(this.nextRotor, this.rotorNumber, this.changeNextRotor);
             this.nextRotor.rotate();
         }
-        this.rotorNumber = ALPHABET.charAt((ALPHABET.indexOf(this.rotorNumber) + 1) % 26);
-        console.log(this.rotorNumber + "rotor number");
+        const indexOfRotorNumber: number = ROTOR_PAIRINGS[this.rotorID]['forward'].indexOf(this.rotorNumber);
+        this.rotorNumber = ROTOR_PAIRINGS[this.rotorID]['forward'].charAt((indexOfRotorNumber + 1) % 26);
     }
 
-    runLetterThroughRotor(index: string, forwardDirection: boolean): string {
+    runLetterThroughRotor(letter: string, forwardDirection: boolean): string {
         let direction: string;
         let backDirection: string;
-        const letter: number = ALPHABET.indexOf(index);
 
         if (forwardDirection) {
             direction = "forward";
@@ -51,11 +51,11 @@ export class Rotor {
             backDirection = "forward";
         }
 
-        console.log(this.rotorID, direction);
-        console.log(ROTOR_PAIRINGS[this.rotorID][direction])
-        const indexOfOutput = ROTOR_PAIRINGS[this.rotorID][direction].indexOf(index);
-        const output = ROTOR_PAIRINGS[this.rotorID][backDirection].charAt(indexOfOutput);
-        console.log(output + "output");
+        const indexOfRotorNumber: number = ROTOR_PAIRINGS[this.rotorID][direction].indexOf(this.rotorNumber);
+        console.log(indexOfRotorNumber, this.rotorNumber);
+        const letterForward = ROTOR_PAIRINGS[this.rotorID][direction];
+        const index: number = letterForward.indexOf(letter);
+        const output = ROTOR_PAIRINGS[this.rotorID][backDirection].charAt(index);
 
 
         if (this.nextRotor !== null && forwardDirection) {

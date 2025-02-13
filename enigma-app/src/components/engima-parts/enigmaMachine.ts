@@ -46,7 +46,11 @@ export const doTestThing = () => {
     const enigmaMachine = new EnigmaMachine([rotor1, rotor2, rotor3]);
     const enigmaMachineOutput = new EnigmaMachine([rotor1_, rotor2_, rotor3_]);
 
-    console.log(enigmaMachine.runLetterThroughMachine("A") + " output of enigma machine");
+    console.log(enigmaMachine.runLetterThroughMachine("G") + " output of enigma machine");
     console.log("----------------")
-    console.log(enigmaMachineOutput.runLetterThroughMachine("C") + " output of decryption");
+    console.log(enigmaMachineOutput.runLetterThroughMachine("R") + " output of decryption");
+
+    for (let i = 0; i < 26; i++) {
+        console.log(enigmaMachine.runLetterThroughMachine("G") + " output of enigma machine");
+    }
 }
