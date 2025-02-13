@@ -1,6 +1,6 @@
-import {runLetterThroughPlugboard} from "@/components/engima-parts/Plugboard";
-import {reflectLetter} from "@/components/engima-parts/Reflector";
-import {Rotor} from "@/components/engima-parts/Rotors";
+import {runLetterThroughPlugboard} from "src/components/engima-parts/Plugboard";
+import {reflectLetter} from "src/components/engima-parts/Reflector";
+import {Rotor} from "src/components/engima-parts/Rotors";
 
 
 export class EnigmaMachine {
@@ -21,8 +21,7 @@ export class EnigmaMachine {
         const letterAfterRotors: string = this.rotors[0].runLetterThroughRotor(letterAfterPlugboard, true);
         const letterAfterReflector: string = reflectLetter(letterAfterRotors);
         const letterAfterRotorsBackward: string = this.rotors[2].runLetterThroughRotor(letterAfterReflector, false);
-        const letterAfterPlugboardBackward: string = runLetterThroughPlugboard(letterAfterRotorsBackward);
-        return letterAfterPlugboardBackward
+        return runLetterThroughPlugboard(letterAfterRotorsBackward)
     } // if this works imma crazy --- this comment aged well :/
 }
 

@@ -48,7 +48,6 @@ function setPlugboard() {
 
     let lettersUsed = [];
     plugboardSettings.forEach((setting) => {
-        // checks alphabetical and of len 2
         if (/^[a-zA-Z()]+$/.test(setting.value) && setting.value.length == 2) {
             console.log("yipe");
         }
@@ -96,7 +95,6 @@ function encryptOrDecrypt() {
         let inputCapitalised = input.toUpperCase();
         let output = "";
 
-        // TODO: refactor to function that take input letter and gives output letter
         // -- rather than current take entire string output entire string
         for (let i=0; i < inputCapitalised.length; i++) {
             let letter = inputCapitalised.charAt(i);

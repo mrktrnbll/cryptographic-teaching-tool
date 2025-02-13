@@ -3,10 +3,9 @@
 import EnigmaModel from '../components/EnigmaModel'
 import Navigator from '../components/Navigator'
 import '../app/globals.css'
-import {useState, useCallback, useEffect} from "react";
+import {useState, useCallback} from "react";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {doTestThing} from "@/components/engima-parts/enigmaMachine";
 
 export default function Home() {
   const [camera, setCamera] = useState(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
@@ -21,19 +20,6 @@ export default function Home() {
       controls.update()
       controls.enabled = true;
   }, [camera, controls]);
-
-  // TODO: Remove this later
-  // Testing the rotor class
-  // const rotor_m: Rotor  = new Rotor("1", "A", null, null)
-  // const rotor_l: Rotor  = new Rotor("2", "A", rotor_m, null)
-  //
-  // for (let i = 0; i < 30; i++) {
-  //     console.log(rotor_l.rotate());
-  // }
-  // console.log(rotor_m.rotate());
-    useEffect(() => {
-      doTestThing();
-    }, []);
 
   return (
       <div style={{position: 'relative', width: '100vw', height: '100vh'}}>
