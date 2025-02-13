@@ -1,27 +1,35 @@
+import {expo} from "maath/easing";
+
 export const ROTOR_PAIRINGS: Record<string, Record<string,string>> = {
-    "1": { "forward": "ATQSWERDFYGZUCHXVJLIOPKMNB", "backward": "IQWHLAXJUFPCVMYNDKOSBZRGTE" },
-    "2": { "forward": "MJUIOKPLNAZVXCBSDGFHYQTWER", "backward": "FASPZKIUYEOJWXQLVBMGRHCDTN" },
-    "3": { "forward": "ABZXVSCWQREFDLMYTUIGJPOKHN", 'backward': "WYCZKXTDGAQNBOIMLUVRJPHESF" },
-    "4": { "forward": "TSBYQINHFZJRUPELAWXKGDOMCV", "backward": "DZGBHWTYPFSEKLNRUVOJCMQAXI" },
-    "5": { "forward": "KHCDUFYSAINXZMRPGTEBOVQJWL", "backward": "ORGMKSJCVIUXNLZQWBYTAPHFDE" },
-};
+    '1': { "forward": "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "backward": "UWYGADFPVZBECKMTHXSLRINQOJ"},
+    '2': { "forward": "AJDKSIRUXBLHWTMCQGZNPYFVOE", "backward": "AJPCZWRLFBDKOTYUQGENHXMIVS"},
+    '3': { "forward": "BDFHJLCPRTXVZNYEIWGAKMUSQO", "backward": "TAGBPCSDQEUFVNZHYIXJWLRKOM"},
+    "4": { "forward": "ESOVPZJAYQUIRHXLNFTGKDCMWB", "backward": "HZWVARTNLGUPXQCEJMBSKDYOIF" },
+    "5": { "forward": "VZBRGITYUPSDNHLXAWMJQOFECK", "backward": "QCYLXWENFTZOSMVJUDKGIARPHB" },
+}; // historically accurate rotor settings
 
 export const NOTCHES: Record<string, string> = {
-    "1": "M",
-    "2": "A",
-    "3": "R",
-    "4": "K",
-    "5": "T",
-} // hehe
+    "1": "Q",
+    "2": "E",
+    "3": "V",
+    "4": "J",
+    "5": "Z",
+}
 
 export const REFLECTOR = {
     "forward": "MARKTUNBLQWEY", // hehe
     "backward": "CDFGHIJOPSVXZ",
 }
 
+//// comment out the above and uncomment the below for historically accurate reflector settings
+// export const REFLECTOR = {
+//     forward: "ABCDEFGIJKMTV",
+//     backward: "YRUHQSLPXNOZW",
+// } // historically accurate reflector settings
+
 export const PLUGBOARD_SETTINGS = {
     "forward": "ABCDEFGHIJKLM",
     "backward": "NOPQRSTUVWXYZ",
 } // default setting - empty plugboard (no connections)
 
-export const ALPHABET: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+export const ALPHABET: string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
