@@ -40,23 +40,30 @@ export class Rotor {
 
     runLetterThroughRotor(index: string, forwardDirection: boolean): string {
         let direction: string;
-        const letter: number = ALPHABET.charAt(index);
+        let backDirection: string;
+        const letter: number = ALPHABET.indexOf(index);
 
         if (forwardDirection) {
             direction = "forward";
+            backDirection = "backward";
         } else {
             direction = "backward";
+            backDirection = "forward";
         }
-        const output: string = ROTOR_PAIRINGS[this.rotorID][direction][(letter + this.startingPosition) % 26];
 
-        const indexOfOutput: number = (ALPHABET.indexOf(output) - this.startingPosition)%26;
+        console.log(this.rotorID, direction);
+        console.log(ROTOR_PAIRINGS[this.rotorID][direction])
+        const indexOfOutput = ROTOR_PAIRINGS[this.rotorID][direction].indexOf(index);
+        const output = ROTOR_PAIRINGS[this.rotorID][backDirection].charAt(indexOfOutput);
+        console.log(output + "output");
+
 
         if (this.nextRotor !== null && forwardDirection) {
-            return this.nextRotor.runLetterThroughRotor(indexOfOutput, forwardDirection);
+            return this.nextRotor.runLetterThroughRotor(output, forwardDirection);
         } else if (this.previousRotor !== null && !forwardDirection) {
-            return this.previousRotor.runLetterThroughRotor(indexOfOutput, forwardDirection);
+            return this.previousRotor.runLetterThroughRotor(output, forwardDirection);
         } else {
-            return ALPHABET.charAt(indexOfOutput);
+            return output;
         }
     }
 }

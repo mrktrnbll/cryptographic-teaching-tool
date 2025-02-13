@@ -6,6 +6,7 @@ import '../app/globals.css'
 import {useState, useCallback, useEffect} from "react";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {doTestThing} from "@/components/engima-parts/enigmaMachine";
 
 export default function Home() {
   const [camera, setCamera] = useState(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
