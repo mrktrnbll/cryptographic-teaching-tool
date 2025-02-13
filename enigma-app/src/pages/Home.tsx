@@ -3,10 +3,9 @@
 import EnigmaModel from '../components/EnigmaModel'
 import Navigator from '../components/Navigator'
 import '../app/globals.css'
-import { useState, useCallback } from "react";
+import {useState, useCallback, useEffect} from "react";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {Rotor} from "@/components/engima-parts/Rotors";
 
 export default function Home() {
   const [camera, setCamera] = useState(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
@@ -31,6 +30,9 @@ export default function Home() {
   //     console.log(rotor_l.rotate());
   // }
   // console.log(rotor_m.rotate());
+    useEffect(() => {
+      doTestThing();
+    }, []);
 
   return (
       <div style={{position: 'relative', width: '100vw', height: '100vh'}}>
