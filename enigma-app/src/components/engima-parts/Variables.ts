@@ -1,9 +1,9 @@
-interface Rotor {
+interface RotorInterface {
     forward: string;
     backward: string;
 }
 
-export const ROTOR_PAIRINGS: Record<string, Rotor> = {
+export const ROTOR_PAIRINGS: Record<string, RotorInterface> = {
     "1": { forward: "ATQSWERDFYGZUCHXVJLIOPKMNB", backward: "IQWHLAXJUFPCVMYNDKOSBZRGTE" },
     "2": { forward: "MJUIOKPLNAZVXCBSDGFHYQTWER", backward: "FASPZKIUYEOJWXQLVBMGRHCDTN" },
     "3": { forward: "ABZXVSCWQREFDLMYTUIGJPOKHN", backward: "WYCZKXTDGAQNBOIMLUVRJPHESF" },
@@ -19,12 +19,12 @@ export const NOTCHES: Record<string, string> = {
     "5": "T",
 } // hehe
 
-export const REFLECTOR: Rotor = {
+export const REFLECTOR: RotorInterface = {
     forward: "MARKTUNBLQWEY", // hehe
     backward: "CDFGHIJOPSVXZ",
 }
 
-export const PLUGBOARD_SETTINGS: Rotor = {
+export const PLUGBOARD_SETTINGS: RotorInterface = {
     forward: "ABCDEFGHIJKLM",
     backward: "NOPQRSTUVWXYZ",
 } // default setting - empty plugboard (no connections)
