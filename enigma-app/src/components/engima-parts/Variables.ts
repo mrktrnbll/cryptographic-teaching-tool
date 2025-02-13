@@ -1,5 +1,3 @@
-import {expo} from "maath/easing";
-
 export const ROTOR_PAIRINGS: Record<string, Record<string,string>> = {
     '1': { "forward": "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "backward": "UWYGADFPVZBECKMTHXSLRINQOJ"},
     '2': { "forward": "AJDKSIRUXBLHWTMCQGZNPYFVOE", "backward": "AJPCZWRLFBDKOTYUQGENHXMIVS"},

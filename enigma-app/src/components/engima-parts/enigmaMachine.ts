@@ -18,17 +18,12 @@ export class EnigmaMachine {
         this.rotateRotors();
 
         const letterAfterPlugboard: string = runLetterThroughPlugboard(letter);
-        // console.log("letter after plugboard", letterAfterPlugboard);
         const letterAfterRotors: string = this.rotors[0].runLetterThroughRotor(letterAfterPlugboard, true);
-        // console.log("letter after rotors", letterAfterRotors);
         const letterAfterReflector: string = reflectLetter(letterAfterRotors);
-        // console.log("letter after reflector", letterAfterReflector);
         const letterAfterRotorsBackward: string = this.rotors[2].runLetterThroughRotor(letterAfterReflector, false);
-        // console.log("letter after rotors backward", letterAfterRotorsBackward);
         const letterAfterPlugboardBackward: string = runLetterThroughPlugboard(letterAfterRotorsBackward);
-        // console.log("letter after plugboard backward", letterAfterPlugboardBackward);
         return letterAfterPlugboardBackward
-    } // if this works imma crazy
+    } // if this works imma crazy --- this comment aged well :/
 }
 
 export const doTestThing = () => {
