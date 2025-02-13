@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useRef, useState} from "react";
+import React, {MutableRefObject, useEffect, useRef, useState} from "react";
 import * as THREE from 'three';
 import {Mesh, Object3D, Object3DEventMap} from 'three';
 
@@ -8,6 +8,8 @@ import {Mesh, Object3D, Object3DEventMap} from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 // @ts-expect-error - no types for this package
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {EnigmaMachine} from "@/components/engima-parts/enigmaMachine";
+import {Rotor} from "@/components/engima-parts/Rotors";
 
 
 export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
@@ -15,6 +17,8 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     const [arrows, setArrows] = useState();
     const [rotorPlanes, setRotorPlanes] = useState();
     const [rotorValues, setRotorValues] = useState([1,1,1]);
+    const enigmaMachineRef: MutableRefObject<EnigmaMachine|null>  = useRef<EnigmaMachine | null>(null);
+
     let lamps: { [s: string]: Mesh; };
     let rotors: { [s: string]: Mesh; };
     let plugs: Mesh;
@@ -26,6 +30,20 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     const whiteBackground = 0xFFFFFF
 
     const containerRef = useRef();
+
+    function createEnigmaModel(): EnigmaMachine {
+        // on load rotors are set to 1, 1, 1 - this aligns with the rotors below
+        const rotor1: Rotor = new Rotor("1", "A");
+        const rotor2: Rotor = new Rotor("2", "A");
+        const rotor3: Rotor = new Rotor("3", "A");
+
+        rotor1.setNextRotor(rotor2);
+        rotor2.setNextRotor(rotor3);
+        rotor2.setPreviousRotor(rotor1);
+        rotor3.setPreviousRotor(rotor2);
+
+        return new EnigmaMachine([rotor1, rotor2, rotor3]);
+    }
 
     function lightUpLamp(mesh:Mesh, color = 0xffff00, duration = 500) {
         if (!mesh) return;
@@ -285,6 +303,9 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 setArrows(arrowDict)
 
                 setLoadingProgress(false);
+
+                enigmaMachineRef.current = createEnigmaModel();
+                console.log(enigmaMachineRef.current)
             });
 
         const animate = () => {
@@ -347,47 +368,54 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         } else {
             return rotorValue + minusAdd;
         }
-    }
+    } // this is a terrible way to do this lol - % would be better
 
     function handleArrowClick(clickedObject: Object3D<Object3DEventMap>) {
-        let rv: [number, number, number];
-        let minusAdd: number;
-        if (!arrows || !rotorPlanes) {
+        let newRotorValue: number;
+        if (!arrows || !rotorPlanes || !enigmaMachineRef.current) {
             return;
         }
+
         if (clickedObject === arrows.rotor1Down) {
-            minusAdd = minusAddRotorValue(rotorValues[0], -1);
-            rv = [minusAdd, rotorValues[1], rotorValues[2]]
-            updateTextOnPlane(rotorPlanes.rotor1, minusAdd);
-            setRotorValues(rv)
-        } else if (clickedObject === arrows.rotor2Down) {
-            minusAdd = minusAddRotorValue(rotorValues[1], -1)
-            rv = [rotorValues[0], minusAdd, rotorValues[2]]
-            updateTextOnPlane(rotorPlanes.rotor2,minusAdd);
-            setRotorValues(rv)
-        } else if (clickedObject === arrows.rotor3Down) {
-            minusAdd = minusAddRotorValue(rotorValues[2], -1)
-            rv = [rotorValues[0], rotorValues[1], minusAdd]
-            updateTextOnPlane(rotorPlanes.rotor3, minusAdd);
-            setRotorValues(rv)
+            newRotorValue = minusAddRotorValue(rotorValues[0], -1);
+            updateTextOnPlane(rotorPlanes.rotor1, newRotorValue);
+            setRotorValues([newRotorValue, rotorValues[1], rotorValues[2]]);
+            enigmaMachineRef.current.rotors[0].updatePosition(newRotorValue);
+            console.log(newRotorValue)
         } else if (clickedObject === arrows.rotor1Up) {
-            minusAdd = minusAddRotorValue(rotorValues[0], 1)
-            rv = [minusAdd, rotorValues[1], rotorValues[2]]
-            updateTextOnPlane(rotorPlanes.rotor1, minusAdd);
-            setRotorValues(rv)
+            newRotorValue = minusAddRotorValue(rotorValues[0], 1);
+            updateTextOnPlane(rotorPlanes.rotor1, newRotorValue);
+            setRotorValues([newRotorValue, rotorValues[1], rotorValues[2]]);
+            enigmaMachineRef.current.rotors[0].updatePosition(newRotorValue);
+            console.log(newRotorValue)
+        } else if (clickedObject === arrows.rotor2Down) {
+            newRotorValue = minusAddRotorValue(rotorValues[1], -1);
+            updateTextOnPlane(rotorPlanes.rotor2, newRotorValue);
+            setRotorValues([rotorValues[0], newRotorValue, rotorValues[2]]);
+            enigmaMachineRef.current.rotors[1].updatePosition(newRotorValue);
+            console.log(newRotorValue)
         } else if (clickedObject === arrows.rotor2Up) {
-            minusAdd = minusAddRotorValue(rotorValues[1], 1)
-            rv = [rotorValues[0], minusAdd, rotorValues[2]]
-            updateTextOnPlane(rotorPlanes.rotor2, minusAdd);
-            setRotorValues(rv)
+            newRotorValue = minusAddRotorValue(rotorValues[1], 1);
+            updateTextOnPlane(rotorPlanes.rotor2, newRotorValue);
+            setRotorValues([rotorValues[0], newRotorValue, rotorValues[2]]);
+            enigmaMachineRef.current.rotors[1].updatePosition(newRotorValue);
+            console.log(newRotorValue)
+        } else if (clickedObject === arrows.rotor3Down) {
+            newRotorValue = minusAddRotorValue(rotorValues[2], -1);
+            updateTextOnPlane(rotorPlanes.rotor3, newRotorValue);
+            setRotorValues([rotorValues[0], rotorValues[1], newRotorValue]);
+            enigmaMachineRef.current.rotors[2].updatePosition(newRotorValue);
+            console.log(newRotorValue)
         } else if (clickedObject === arrows.rotor3Up) {
-            minusAdd = minusAddRotorValue(rotorValues[2], 1)
-            rv = [rotorValues[0], rotorValues[1], minusAdd]
-            updateTextOnPlane(rotorPlanes.rotor3, minusAdd);
-            setRotorValues(rv)
+            newRotorValue = minusAddRotorValue(rotorValues[2], 1);
+            updateTextOnPlane(rotorPlanes.rotor3, newRotorValue);
+            setRotorValues([rotorValues[0], rotorValues[1], newRotorValue]);
+            enigmaMachineRef.current.rotors[2].updatePosition(newRotorValue);
+            console.log(newRotorValue)
         } else {
             console.log("Unknown arrow clicked!");
         }
+        console.log(enigmaMachineRef.current)
     }
 
     return (

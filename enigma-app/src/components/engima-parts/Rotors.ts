@@ -31,6 +31,11 @@ export class Rotor {
         this.previousRotor = previousRotor;
     }
 
+    public updatePosition(newValue: number) {
+        this.window = String.fromCharCode(65 + (newValue-1 % 26));
+        this.offset = newValue-1;
+    } // should definetly test this method
+
     rotate(): void {
         if (this.nextRotor && this.window === this.notch) {
             console.log(this.rotorNum, this.window, this.notch, "before rotate");
