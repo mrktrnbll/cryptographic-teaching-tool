@@ -15,42 +15,38 @@ export class EnigmaMachine {
     }
 
     runLetterThroughMachine(letter: string): string {
+        this.rotateRotors();
+
         const letterAfterPlugboard: string = runLetterThroughPlugboard(letter);
-        this.rotateRotors()
+        // console.log("letter after plugboard", letterAfterPlugboard);
         const letterAfterRotors: string = this.rotors[0].runLetterThroughRotor(letterAfterPlugboard, true);
+        // console.log("letter after rotors", letterAfterRotors);
         const letterAfterReflector: string = reflectLetter(letterAfterRotors);
+        // console.log("letter after reflector", letterAfterReflector);
         const letterAfterRotorsBackward: string = this.rotors[2].runLetterThroughRotor(letterAfterReflector, false);
-        return runLetterThroughPlugboard(letterAfterRotorsBackward);
+        // console.log("letter after rotors backward", letterAfterRotorsBackward);
+        const letterAfterPlugboardBackward: string = runLetterThroughPlugboard(letterAfterRotorsBackward);
+        // console.log("letter after plugboard backward", letterAfterPlugboardBackward);
+        return letterAfterPlugboardBackward
     } // if this works imma crazy
 }
 
 export const doTestThing = () => {
-    const rotor1: Rotor = new Rotor("1", "A");
-    const rotor2: Rotor = new Rotor("2", "A");
-    const rotor3: Rotor = new Rotor("3", "A");
+    const rotor1: Rotor = new Rotor("1", "C");
+    const rotor2: Rotor = new Rotor("2", "C");
+    const rotor3: Rotor = new Rotor("3", "Z");
     rotor1.setNextRotor(rotor2);
     rotor2.setNextRotor(rotor3);
 
     rotor2.setPreviousRotor(rotor1);
     rotor3.setPreviousRotor(rotor2);
 
-    const rotor1_: Rotor = new Rotor("1", "A");
-    const rotor2_: Rotor = new Rotor("2", "A");
-    const rotor3_: Rotor = new Rotor("3", "A");
-    rotor1_.setNextRotor(rotor2_);
-    rotor2_.setNextRotor(rotor3_);
-
-    rotor2_.setPreviousRotor(rotor1_);
-    rotor3_.setPreviousRotor(rotor2_);
-
     const enigmaMachine = new EnigmaMachine([rotor1, rotor2, rotor3]);
-    const enigmaMachineOutput = new EnigmaMachine([rotor1_, rotor2_, rotor3_]);
 
-    console.log(enigmaMachine.runLetterThroughMachine("G") + " output of enigma machine");
-    console.log("----------------")
-    console.log(enigmaMachineOutput.runLetterThroughMachine("R") + " output of decryption");
+    console.log(enigmaMachine.runLetterThroughMachine("M"));
+    console.log(enigmaMachine.runLetterThroughMachine("O"));
+    console.log(enigmaMachine.runLetterThroughMachine("L"));
 
-    for (let i = 0; i < 26; i++) {
-        console.log(enigmaMachine.runLetterThroughMachine("G") + " output of enigma machine");
-    }
+    console.log(rotor1.invertWiring("ESOVPZJAYQUIRHXLNFTGKDCMWB"));
+    console.log(rotor1.invertWiring("VZBRGITYUPSDNHLXAWMJQOFECK"));
 }
