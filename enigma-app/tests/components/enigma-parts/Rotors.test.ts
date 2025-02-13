@@ -10,4 +10,7 @@ describe('runThroughRotor', () => {
     test('A - should be I', () => {
         expect(Rotor1.runLetterThroughRotor('A', true)).toBe('I');
     });
+    test('S - should be U', () => {
+        expect(Rotor2.runLetterThroughRotor('S', false)).toBe('U');
+    });
 });

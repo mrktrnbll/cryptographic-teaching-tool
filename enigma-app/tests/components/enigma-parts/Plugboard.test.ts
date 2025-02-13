@@ -1,7 +1,7 @@
 import { runLetterThroughPlugboard } from 'src/components/engima-parts/Plugboard';
 
 describe('runLetterThroughPlugboard', () => {
-    test('[A] - should be N', () => {
+    test('A - should be N', () => {
         expect(runLetterThroughPlugboard('A')).toBe('N');
     });
     test('C - should be P', () => {
