@@ -11,13 +11,10 @@ export const runLetterThroughPlugboard: (letter: string) => string = (letter: st
     } else if (PLUGBOARD_SETTINGS.backward.includes(letter)) {
         return REFLECTOR.forward.charAt(REFLECTOR.backward.indexOf(letter));
     } else {
-        return letter;
+        return "why the fuck";
     }
 }
 
 // TODO:
 //  - add way to set plugboard settings
 //  - test runLetterThroughPlugboard(), refactored so works similar as Reflector passthrough funciton
-
-
-console.log(runLetterThroughPlugboard("A")) // "tested" and works
