@@ -11,6 +11,7 @@ import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {EnigmaMachine} from "@/components/engima-parts/enigmaMachine";
 import {Rotor} from "@/components/engima-parts/Rotors";
 import {ALPHABET} from "@/components/engima-parts/Variables";
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 
 
 export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
@@ -34,6 +35,12 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     const whiteBackground = 0xFFFFFF
 
     const containerRef = useRef();
+
+
+    const [open, setOpen] = React.useState(false);
+    const handleClickToOpen = () => {setOpen(true);};
+    const handleToClose = () => {setOpen(false);};
+
 
     function createEnigmaModel(): EnigmaMachine {
         // on load rotors are set to 1, 1, 1 - this aligns with the rotors below
@@ -320,37 +327,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         };
     }, [camera, controls]);
 
-    // useEffect(() => {
-    //     const handleKeyDown = (event: KeyboardEvent) => {
-    //         const pressedLetter = event.key.toUpperCase();
-    //
-    //         if (enigmaMachineRef.current) {
-    //             const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
-    //
-    //             if (lamps && lamps[encryptedLetter]) {
-    //                 lightUpLamp(lamps[encryptedLetter]);
-    //             }
-    //
-    //             const updatedRotors = enigmaMachineRef.current.rotors;
-    //
-    //             if (rotorPlanes) {
-    //                 updateTextOnPlane(rotorPlanes.rotor1, ALPHABET.indexOf(updatedRotors[0].window)+1);
-    //                 updateTextOnPlane(rotorPlanes.rotor2, ALPHABET.indexOf(updatedRotors[1].window)+1);
-    //                 updateTextOnPlane(rotorPlanes.rotor3, ALPHABET.indexOf(updatedRotors[2].window)+1);
-    //             }
-    //
-    //             setRotorValues([
-    //                 updatedRotors[0].offset,
-    //                 updatedRotors[1].offset,
-    //                 updatedRotors[2].offset
-    //             ]);
-    //         }
-    //     };
-    //
-    //     window.addEventListener("keydown", handleKeyDown);
-    //     return () => window.removeEventListener("keydown", handleKeyDown);
-    // }, [lamps, ]);
-
     useEffect(() => {
         lampsRef.current = lamps;
     }, [lamps]);
@@ -364,6 +340,10 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             const pressedLetter = event.key.toUpperCase();
 
             if (enigmaMachineRef.current) {
+                if (!ALPHABET.includes(pressedLetter)) {
+                    handleClickToOpen();
+                    return;
+                }
                 const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
 
                 if (lampsRef.current && lampsRef.current[encryptedLetter]) {
@@ -488,17 +468,35 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     }
 
     return (
-        <div ref={containerRef}
-             style={{width: '100vw', height: '100vh'}}>
-            {loadingProgress && <h3 style={{
-                position: "absolute",
-                width: '15vw',
-                height: '10vw',
-                top: "50dvh",
-                left: "46dvw",
-                color: "black",
-                zIndex: 1
-            }}>Loading! Hang tight :)</h3>}
+        <div>
+            <div ref={containerRef}
+                 style={{width: '100vw', height: '100vh'}}>
+                {loadingProgress && <h3 style={{
+                    position: "absolute",
+                    width: '15vw',
+                    height: '10vw',
+                    top: "50dvh",
+                    left: "46dvw",
+                    color: "black",
+                    zIndex: 1
+                }}>Loading! Hang tight :)</h3>}
+            </div>
+            <div>
+                <Dialog open={open} onClose={handleToClose}>
+                    <DialogTitle>Invalid Input</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Please only use the alphabet keys to interact with the Enigma Machine.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleToClose}
+                                color="primary" autoFocus>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
         </div>
     )
 }
