@@ -25,6 +25,9 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     let plugs: Mesh;
     let plugWires: Mesh;
 
+    const lampsRef = useRef();
+    const rotorPlanesRef = useRef();
+
     const ROTOR_HEIGHT = 0.003
 
     const background = 0xE5E1DA
@@ -72,7 +75,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 lamps[letter.toUpperCase()] = lampObject;
             }
         });
-
+        lampsRef.current = lamps;
         return lamps;
     }
 
@@ -302,7 +305,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 setLoadingProgress(false);
 
                 enigmaMachineRef.current = createEnigmaModel();
-                console.log(enigmaMachineRef.current)
+
             });
 
         const animate = () => {
@@ -317,6 +320,45 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         };
     }, [camera, controls]);
 
+    // useEffect(() => {
+    //     const handleKeyDown = (event: KeyboardEvent) => {
+    //         const pressedLetter = event.key.toUpperCase();
+    //
+    //         if (enigmaMachineRef.current) {
+    //             const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
+    //
+    //             if (lamps && lamps[encryptedLetter]) {
+    //                 lightUpLamp(lamps[encryptedLetter]);
+    //             }
+    //
+    //             const updatedRotors = enigmaMachineRef.current.rotors;
+    //
+    //             if (rotorPlanes) {
+    //                 updateTextOnPlane(rotorPlanes.rotor1, ALPHABET.indexOf(updatedRotors[0].window)+1);
+    //                 updateTextOnPlane(rotorPlanes.rotor2, ALPHABET.indexOf(updatedRotors[1].window)+1);
+    //                 updateTextOnPlane(rotorPlanes.rotor3, ALPHABET.indexOf(updatedRotors[2].window)+1);
+    //             }
+    //
+    //             setRotorValues([
+    //                 updatedRotors[0].offset,
+    //                 updatedRotors[1].offset,
+    //                 updatedRotors[2].offset
+    //             ]);
+    //         }
+    //     };
+    //
+    //     window.addEventListener("keydown", handleKeyDown);
+    //     return () => window.removeEventListener("keydown", handleKeyDown);
+    // }, [lamps, ]);
+
+    useEffect(() => {
+        lampsRef.current = lamps;
+    }, [lamps]);
+
+    useEffect(() => {
+        rotorPlanesRef.current = rotorPlanes;
+    }, [rotorPlanes]);
+
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             const pressedLetter = event.key.toUpperCase();
@@ -324,33 +366,38 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             if (enigmaMachineRef.current) {
                 const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
 
-                if (lamps && lamps[encryptedLetter]) {
-                    lightUpLamp(lamps[encryptedLetter]);
+                if (lampsRef.current && lampsRef.current[encryptedLetter]) {
+                    lightUpLamp(lampsRef.current[encryptedLetter]);
                 }
 
                 const updatedRotors = enigmaMachineRef.current.rotors;
 
-                if (rotorPlanes) {
-                    updateTextOnPlane(rotorPlanes.rotor1, ALPHABET.indexOf(updatedRotors[0].window)+1);
-                    updateTextOnPlane(rotorPlanes.rotor2, ALPHABET.indexOf(updatedRotors[1].window)+1);
-                    updateTextOnPlane(rotorPlanes.rotor3, ALPHABET.indexOf(updatedRotors[2].window)+1);
+                if (rotorPlanesRef.current) {
+                    updateTextOnPlane(
+                        rotorPlanesRef.current.rotor1,
+                        ALPHABET.indexOf(updatedRotors[0].window) + 1
+                    );
+                    updateTextOnPlane(
+                        rotorPlanesRef.current.rotor2,
+                        ALPHABET.indexOf(updatedRotors[1].window) + 1
+                    );
+                    updateTextOnPlane(
+                        rotorPlanesRef.current.rotor3,
+                        ALPHABET.indexOf(updatedRotors[2].window) + 1
+                    );
                 }
 
                 setRotorValues([
                     updatedRotors[0].offset,
                     updatedRotors[1].offset,
-                    updatedRotors[2].offset
+                    updatedRotors[2].offset,
                 ]);
             }
         };
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [lamps, rotorPlanes]);
-
-
-
-
+    }, []);
 
     useEffect(() => {
         const raycaster = new THREE.Raycaster();
