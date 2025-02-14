@@ -1,77 +1,130 @@
-'use client'
+"use client";
 
-import React from 'react';
-import { Drawer, Box, Typography, Divider, Button } from '@mui/material';
+import React, { useState } from "react";
+import { Drawer, Box, Typography, Divider, Button } from "@mui/material";
 
 export default function FloatingDrawer() {
-  return (
-    <div className="font-whiteRabbit" style={{ position: 'absolute', width: '20vw', height: '100vh'}}>
-      <Drawer
-          variant="permanent"
-          anchor="right"
-          PaperProps={{
-            sx: {
-              width: 305,
-              height: '60vh',
-              marginTop: '10vh',
-              marginRight: '0.5vw',
-              boxShadow: '10px 10px 10px 10px rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px 8px 8px 8px',
-              backgroundColor: 'rgb(179, 200, 207)',
-              backdropFilter: 'blur(8px)',
-              position: 'absolute',
-              zIndex: 1
-            },
-          }}
-      >
-        <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              height: '100%',
-              width: '100%',
-              padding: 2,
-              pointerEvents: 'auto'
-            }}
-        >
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Breaking the Enigma Machine
-            </Typography>
-            <Typography variant="body2">
-                This is the enigma machine navigator! Let's get started.
-            </Typography>
-            <Divider sx={{ marginY: 2 }} />
-          </Box>
+    const [open, setOpen] = useState(false);
 
-          <Box>
-            <Typography marginLeft={5} variant="subtitle1">Introduction</Typography>
-              The Enigma machine was a cipher device used by Nazi Germany during World War II
-              to encrypt and decrypt military communications. It relied on a system of rotating
-              rotors and plugboard connections to generate complex, ever-changing cyphers. Breaking
-              the enigma machine would play a crucial role in shortening the war but it was "unbreakable".
-          </Box>
-          <Box marginTop={5}>
-            <Typography marginLeft={5} variant="subtitle1">Decrypting</Typography>
-            - The Enigma machine had over 158,962,555,217,826,360,000 possible settings. This made brute force
-              checking near impossible - the practise of trying every possible combination.
-              <br/>
-            - On top of this, the setting changed every day! So if the code was broken, they would have
-              to do it all over again the next day.
-          </Box>
+    const handleToggle = () => {
+        setOpen((prev)=> {
+            console.log("Toggled", prev);
+            return !prev;
+        });
+    };
 
-          <Box textAlign={"center"}>
-            <Button onClick={() => console.log("hello")}>Start</Button>
-          </Box>
+    return (
+        <div style={{ zIndex: 9999, position: "relative", minHeight: "100vh" }}>
+            <Button
+                variant="contained"
+                onClick={handleToggle}
+                sx={{
+                    zIndex: 9999,
+                    position: "fixed",
+                    bottom: 16,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                }}
+            >
+                Show Tutorial
+            </Button>
 
-          <Box textAlign="center">
-            <Typography variant="caption" color="textSecondary">
-              @mrktrnbll
-            </Typography>
-          </Box>
-        </Box>
-      </Drawer>
-    </div>
-  );
+            <Drawer
+                variant="temporary"
+                anchor="bottom"
+                open={open}
+                onClose={handleToggle}
+                PaperProps={{
+                    sx: {
+                        position: "absolute",
+                        top: "20%",
+                        left: "2%",
+                        transform: "translate(-50%, -50%)",
+                        width: "60vw",
+                        height: "60vh",
+                        margin: "0 auto",
+                        boxShadow: "10px 10px 10px 10px rgba(0, 0, 0, 0.4)",
+                        borderRadius: "8px",
+                        backgroundColor: "rgb(179, 200, 207)",
+                        backdropFilter: "blur(8px)",
+                        zIndex: 9999,
+                    },
+                }}
+                sx={{
+                    "& .MuiBackdrop-root": {
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    },
+                }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                        width: "100%",
+                        padding: 2,
+                        pointerEvents: "auto",
+                    }}
+                >
+                    <Box sx={{ flex: 1, overflowY: "auto", p: 2}}>
+                        <Box sx={{textAlign: 'center'}}>
+                            <Typography variant="h6" gutterBottom>
+                                Breaking the Enigma Machine
+                            </Typography>
+                            <Typography variant="body2">
+                                This is the enigma machine navigator! Let&apos;s get started.
+                            </Typography>
+                            <Divider sx={{ marginY: 2 }} />
+                        </Box>
+
+                        <Box>
+                            <Typography marginLeft={5} variant="subtitle1">
+                                Introduction
+                            </Typography>
+                            The Enigma machine was a cipher device used by Nazi Germany during
+                            World War II to encrypt and decrypt military communications. It
+                            relied on a system of rotating rotors and plugboard connections to
+                            generate complex, ever-changing cyphers. Breaking the enigma machine
+                            would play a crucial role in shortening the war but it was
+                            "unbreakable".
+                        </Box>
+
+                        <Box marginTop={2}>
+                            <Typography marginLeft={5} variant="subtitle1">
+                                Breaking the Enigma
+                            </Typography>
+                            - The Enigma machine had over 158,962,555,217,826,360,000 possible
+                            settings. This made brute force checking near impossible - the
+                            practice of trying every possible combination!
+                            <br />
+                            - On top of this, the setting changed every day! So if the code was
+                            broken, they would have to do it all over again the next day.
+                            <br />
+                            <br />
+                        </Box>
+
+                        <Box textAlign={"center"} justifyItems={"center"}>
+                            <Typography maxWidth={"65%"}>
+                                Have a little play around with the machine, click some of the rotor
+                                arrows, change the plugboard settings and see what happens! Try typing
+                                in some text, are the inputs the same as the outputs?
+                                <br />
+                                Once you have done this and are ready to start the walkthrough, click
+                                below to have a more structured tutorial.
+                                <br />
+                            </Typography>
+                            <Button onClick={() => console.log("hello")}>Start Walkthrough</Button>
+                        </Box>
+
+                    </Box>
+
+                    <Box sx={{ textAlign: 'center', p: 1 }}>
+                        <Typography variant="caption" color="textSecondary">
+                            @mrktrnbll
+                        </Typography>
+                    </Box>
+                </Box>
+            </Drawer>
+        </div>
+    );
 }

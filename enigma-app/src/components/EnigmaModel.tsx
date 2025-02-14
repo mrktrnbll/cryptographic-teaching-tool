@@ -272,9 +272,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(background);
 
-        // dev mode - remove if needed
-        const axesHelper = new THREE.AxesHelper(5);
-        scene.add(axesHelper);
         camera.position.set(-6, 6, 4);
 
         renderer.setSize(window.innerWidth, window.innerHeight);

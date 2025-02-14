@@ -26,8 +26,8 @@ export default function Home() {
           <div style={{position: 'absolute', width: '100%', height: '100%'}}>
               <EnigmaModel camera={camera} controls={controls} renderer={renderer}/>
           </div>
-          <div style={{position: 'absolute', top: 0, left: 0, zIndex: 1, pointerEvents: 'none'}}>
-              <Navigator moveToSwitchboard={moveToSwitchboard}/>
+          <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
+              <Navigator/>
           </div>
       </div>
   );
