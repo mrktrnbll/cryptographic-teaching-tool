@@ -10,6 +10,7 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {EnigmaMachine} from "@/components/engima-parts/enigmaMachine";
 import {Rotor} from "@/components/engima-parts/Rotors";
+import {ALPHABET} from "@/components/engima-parts/Variables";
 
 
 export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
@@ -287,10 +288,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 rotors = getRotors(gltf);
                 [plugs, plugWires] = getPlugBoard(gltf);
 
-                if (lamps) {
-
-                }
-
                 if (rotors) {
                     const newRotorPlanes = createDefaultRotorValuePlanes();
                     setRotorPlanes(newRotorPlanes);
@@ -321,13 +318,38 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     }, [camera, controls]);
 
     useEffect(() => {
-        addEventListener("keydown", (event) => {
-            if (lamps && lamps[event.key.toUpperCase()]) {
-                lightUpLamp(lamps[event.key.toUpperCase()]);
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const pressedLetter = event.key.toUpperCase();
+
+            if (enigmaMachineRef.current) {
+                const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
+
+                if (lamps && lamps[encryptedLetter]) {
+                    lightUpLamp(lamps[encryptedLetter]);
+                }
+
+                const updatedRotors = enigmaMachineRef.current.rotors;
+
+                if (rotorPlanes) {
+                    updateTextOnPlane(rotorPlanes.rotor1, ALPHABET.indexOf(updatedRotors[0].window)+1);
+                    updateTextOnPlane(rotorPlanes.rotor2, ALPHABET.indexOf(updatedRotors[1].window)+1);
+                    updateTextOnPlane(rotorPlanes.rotor3, ALPHABET.indexOf(updatedRotors[2].window)+1);
+                }
+
+                setRotorValues([
+                    updatedRotors[0].offset,
+                    updatedRotors[1].offset,
+                    updatedRotors[2].offset
+                ]);
             }
-        });
-        return () => window.removeEventListener("keydown", () => {});
-    }, [lamps]);
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [lamps, rotorPlanes]);
+
+
+
 
 
     useEffect(() => {
