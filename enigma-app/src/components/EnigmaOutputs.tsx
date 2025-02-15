@@ -2,11 +2,9 @@
 
 import React, { useState } from 'react';
 import {Box, Button, Divider, Drawer, Typography} from "@mui/material";
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 
-export default function MachineSettings({message}) {
-    const [open, setOpen] = useState(false);
+export default function MachineSettings({message, open, setOpen}) {
 
     const handleToggle = () => {
         setOpen((prev)=> {
@@ -17,29 +15,15 @@ export default function MachineSettings({message}) {
 
     return (
         <div style={{zIndex: 9999, position: "relative", minHeight: "100vh"}}>
-            <Button
-                variant="contained"
-                onClick={handleToggle}
-                sx={{
-                    zIndex: 9999,
-                    position: "fixed",
-                    bottom: 16,
-                    left: "42%",
-                    transform: "translateX(-50%)",
-                }}
-            >
-                <TextSnippetIcon />
-            </Button>
-
             <Drawer
                 variant="persistent"
-                anchor="left"
+                anchor="right"
                 open={open}
                 PaperProps={{
                     sx: {
-                        width: "300px",
+                        width: "350px",
                         top: "10%",
-                        left: "1%",
+                        right: "1%",
                         justifySelf: "center",
                         height: "80vh",
                         boxShadow: "4px 4px 4px 4px rgba(0, 0, 0, 0.4)",
@@ -49,7 +33,6 @@ export default function MachineSettings({message}) {
                         zIndex: 9999,
                     },
                 }}
-                // Make sure no backdrop is shown
                 ModalProps={{
                     hideBackdrop: true,
                 }}

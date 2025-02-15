@@ -15,6 +15,8 @@ import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogT
 
 import EnigmaOutputs from "@/components/EnigmaOutputs";
 import EnigmaSettings from "@/components/EnigmaSettings";
+import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
+import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 
 
 export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
@@ -42,9 +44,15 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
 
     const [open, setOpen] = React.useState(false);
-    const handleClickToOpen = () => {setOpen(true);};
-    const handleToClose = () => {setOpen(false);};
-
+    const [openSettings, setOpenSettings] = React.useState(false);
+    const [openNotes, setOpenNotes] = React.useState(false);
+    const handleClickToOpen = () => {setOpen(true)};
+    const handleToClose = () => {setOpen(false)};
+    const handleToggle = (set) => {
+        set((prev)=> {
+            return !prev;
+        });
+    };
 
     function createEnigmaModel(): EnigmaMachine {
         // on load rotors are set to 1, 1, 1 - this aligns with the rotors below
@@ -498,6 +506,20 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 }}>Loading! Hang tight :)</h3>}
             </div>
             <div>
+                <Button
+                    onClick={() => handleToggle(setOpenNotes)}
+                    disabled={openSettings}
+                    variant="contained"
+                    sx={{
+                        zIndex: 9999,
+                        position: "fixed",
+                        bottom: 16,
+                        left: "42%",
+                        transform: "translateX(-50%)",
+                    }}
+                >
+                    <TextSnippetIcon />
+                </Button>
                 <Dialog open={open} onClose={handleToClose}>
                     <DialogTitle>Invalid Input</DialogTitle>
                     <DialogContent>
@@ -512,13 +534,27 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                         </Button>
                     </DialogActions>
                 </Dialog>
+                <Button
+                    onClick={() => handleToggle(setOpenSettings)}
+                    disabled={openNotes}
+                    variant="contained"
+                    sx={{
+                        zIndex: 9999,
+                        position: "fixed",
+                        bottom: 16,
+                        left: "58%",
+                        transform: "translateX(-50%)",
+                    }}
+                >
+                    <SettingsInputComponentIcon />
+                </Button>
             </div>
 
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <EnigmaOutputs message={message}/>
+                <EnigmaOutputs message={message} open={openNotes} setOpen={setOpenNotes}/>
             </div>
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <EnigmaSettings />
+                <EnigmaSettings open={openSettings} setOpen={setOpenSettings}/>
             </div>
         </div>
     )

@@ -14,7 +14,7 @@ export default function FloatingDrawer() {
     };
 
     return (
-        <div style={{ zIndex: 9999, position: "relative", minHeight: "100vh" }}>
+        <div style={{ zIndex: 9999, position: "relative", minHeight: "80vh" }}>
             <Button
                 variant="contained"
                 onClick={handleToggle}
@@ -30,30 +30,25 @@ export default function FloatingDrawer() {
             </Button>
 
             <Drawer
-                variant="temporary"
-                anchor="bottom"
+                variant="persistent"
+                anchor="left"
                 open={open}
-                onClose={handleToggle}
                 PaperProps={{
                     sx: {
-                        position: "absolute",
-                        top: "20%",
-                        left: "2%",
-                        transform: "translate(-50%, -50%)",
-                        width: "60vw",
-                        height: "60vh",
-                        margin: "0 auto",
-                        boxShadow: "10px 10px 10px 10px rgba(0, 0, 0, 0.4)",
+                        width: "400px",
+                        top: "10%",
+                        left: "1%",
+                        justifySelf: "center",
+                        height: "80vh",
+                        boxShadow: "4px 4px 4px 4px rgba(0, 0, 0, 0.4)",
                         borderRadius: "8px",
                         backgroundColor: "rgb(179, 200, 207)",
-                        backdropFilter: "blur(8px)",
+                        backdropFilter: "blur(6px)",
                         zIndex: 9999,
                     },
                 }}
-                sx={{
-                    "& .MuiBackdrop-root": {
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    },
+                ModalProps={{
+                    hideBackdrop: true,
                 }}
             >
                 <Box

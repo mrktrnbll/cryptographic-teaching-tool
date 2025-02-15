@@ -2,11 +2,9 @@
 
 import React, { useState } from 'react';
 import {Box, Button, Divider, Drawer, Typography} from "@mui/material";
-import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
 
 
-export default function EnigmaSettings() {
-    const [open, setOpen] = useState(false);
+export default function EnigmaSettings({open, setOpen}) {
 
     const handleToggle = () => {
         setOpen((prev)=> {
@@ -17,40 +15,26 @@ export default function EnigmaSettings() {
 
     return (
         <div style={{zIndex: 9999, position: "relative", minHeight: "100vh"}}>
-            <Button
-                variant="contained"
-                onClick={handleToggle}
-                sx={{
-                    zIndex: 9999,
-                    position: "fixed",
-                    bottom: 16,
-                    left: "58%",
-                    transform: "translateX(-50%)",
-                }}
-            >
-                <SettingsInputComponentIcon />
-            </Button>
-
             <Drawer
-                variant="temporary"
-                anchor="bottom"
+                variant="persistent"
+                anchor="right"
                 open={open}
-                onClose={handleToggle}
                 PaperProps={{
                     sx: {
-                        position: "absolute",
-                        top: "20%",
-                        left: "2%",
-                        transform: "translate(-50%, -50%)",
-                        width: "60vw",
-                        height: "60vh",
-                        margin: "0 auto",
-                        boxShadow: "10px 10px 10px 10px rgba(0, 0, 0, 0.4)",
+                        width: "350px",
+                        top: "10%",
+                        right: "1%",
+                        justifySelf: "center",
+                        height: "80vh",
+                        boxShadow: "4px 4px 4px 4px rgba(0, 0, 0, 0.4)",
                         borderRadius: "8px",
                         backgroundColor: "rgb(179, 200, 207)",
-                        backdropFilter: "blur(8px)",
+                        backdropFilter: "blur(6px)",
                         zIndex: 9999,
                     },
+                }}
+                ModalProps={{
+                    hideBackdrop: true,
                 }}
             >
                 <Box
