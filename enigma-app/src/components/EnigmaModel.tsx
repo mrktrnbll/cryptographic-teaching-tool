@@ -13,6 +13,9 @@ import {Rotor} from "@/components/engima-parts/Rotors";
 import {ALPHABET} from "@/components/engima-parts/Variables";
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 
+import EnigmaOutputs from "@/components/EnigmaOutputs";
+import MachineSettings from "@/components/MachineSettings";
+
 
 export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
     const [loadingProgress, setLoadingProgress] = useState(true);
@@ -20,6 +23,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     const [rotorPlanes, setRotorPlanes] = useState();
     const [rotorValues, setRotorValues] = useState([1,1,1]);
     const enigmaMachineRef: MutableRefObject<EnigmaMachine|null>  = useRef<EnigmaMachine | null>(null);
+    const message = useRef("");
 
     let lamps: { [s: string]: Mesh; };
     let rotors: { [s: string]: Mesh; };
@@ -338,7 +342,12 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
             if (enigmaMachineRef.current) {
                 if (!ALPHABET.includes(pressedLetter)) {
-                    handleClickToOpen();
+                    if (pressedLetter === " ") {
+                        event.preventDefault();
+                        message.current += " ";
+                    } else {
+                        handleClickToOpen();
+                    }
                     return;
                 }
                 const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
@@ -369,6 +378,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                     updatedRotors[1].offset,
                     updatedRotors[2].offset,
                 ]);
+                message.current += encryptedLetter;
             }
         };
 
@@ -493,6 +503,13 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                         </Button>
                     </DialogActions>
                 </Dialog>
+            </div>
+
+            <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
+                <EnigmaOutputs message={message}/>
+            </div>
+            <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
+                <MachineSettings />
             </div>
         </div>
     )
