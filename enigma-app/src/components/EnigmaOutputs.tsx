@@ -1,17 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import {Box, Button, Divider, Drawer, Typography} from "@mui/material";
 
 
 export default function MachineSettings({message, open, setOpen}) {
+    const [messageEmpty, setMessageEmpty] = useState(true);
 
-    const handleToggle = () => {
-        setOpen((prev)=> {
-            console.log("Toggled", prev);
-            return !prev;
-        });
+    const messageRemove = () => {
+        message.current = "";
+        setMessageEmpty(false);
     };
+
+    useEffect(() => {
+        if (message.current === "") {
+            setMessageEmpty(false);
+        } else {
+            setMessageEmpty(true);
+        }
+    }, [message.current]);
 
     return (
         <div style={{zIndex: 9999, position: "relative", minHeight: "100vh"}}>
@@ -67,21 +74,28 @@ export default function MachineSettings({message, open, setOpen}) {
                         }}>
                             <Typography variant="body1">
                                 {
-                                    message.current.split('++').map((line, idx) => (
-                                    <React.Fragment key={idx}>
-                                        {line}
-                                        <br />
-                                        <br />
-                                    </React.Fragment>))
+                                    messageEmpty &&
+                                    (message.current.split('++').map((line, idx) => (
+                                        <React.Fragment key={idx}>
+                                            {line}
+                                            <br/>
+                                            <br/>
+                                        </React.Fragment>)))
                                 }
                             </Typography>
                         </Box>
                     </Box>
 
                     <Box sx={{ textAlign: 'center', p: 1 }}>
-                        <Typography variant="caption" color="textSecondary">
-                            @mrktrnbll
-                        </Typography>
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                        }}>
+                            <Button onClick={messageRemove}>Erase Notes</Button>
+                            <Typography variant="caption" color="textSecondary">
+                                @mrktrnbll
+                            </Typography>
+                        </Box>
                     </Box>
                 </Box>
             </Drawer>
