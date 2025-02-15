@@ -14,7 +14,7 @@ import {ALPHABET} from "@/components/engima-parts/Variables";
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 
 import EnigmaOutputs from "@/components/EnigmaOutputs";
-import MachineSettings from "@/components/MachineSettings";
+import EnigmaSettings from "@/components/EnigmaSettings";
 
 
 export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
@@ -427,6 +427,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     } // this is a terrible way to do this lol - % would be better
 
     function handleArrowClick(clickedObject: Object3D<Object3DEventMap>) {
+        let addMessageNewLine = true;
         let newRotorValue: number;
         if (!arrows || !rotorPlanes || !enigmaMachineRef.current) {
             return;
@@ -470,8 +471,16 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             console.log(newRotorValue)
         } else {
             console.log("Unknown arrow clicked!");
+            addMessageNewLine = false;
         }
         console.log(enigmaMachineRef.current)
+        if (addMessageNewLine) {
+            console.log("Adding new line");
+            console.log(message.current.slice(-2))
+            if (message.current.slice(-2) !== "++") {
+                message.current += "++";
+            }
+        }
     }
 
     return (
@@ -509,7 +518,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 <EnigmaOutputs message={message}/>
             </div>
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <MachineSettings />
+                <EnigmaSettings />
             </div>
         </div>
     )

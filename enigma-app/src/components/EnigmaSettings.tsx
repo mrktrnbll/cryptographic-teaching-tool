@@ -5,7 +5,7 @@ import {Box, Button, Divider, Drawer, Typography} from "@mui/material";
 import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
 
 
-export default function MachineSettings() {
+export default function EnigmaSettings() {
     const [open, setOpen] = useState(false);
 
     const handleToggle = () => {
@@ -50,11 +50,6 @@ export default function MachineSettings() {
                         backgroundColor: "rgb(179, 200, 207)",
                         backdropFilter: "blur(8px)",
                         zIndex: 9999,
-                    },
-                }}
-                sx={{
-                    "& .MuiBackdrop-root": {
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
                     },
                 }}
             >

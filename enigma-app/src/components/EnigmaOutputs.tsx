@@ -32,30 +32,26 @@ export default function MachineSettings({message}) {
             </Button>
 
             <Drawer
-                variant="temporary"
-                anchor="bottom"
+                variant="persistent"
+                anchor="left"
                 open={open}
-                onClose={handleToggle}
                 PaperProps={{
                     sx: {
-                        position: "absolute",
-                        top: "20%",
-                        left: "2%",
-                        transform: "translate(-50%, -50%)",
-                        width: "60vw",
-                        height: "60vh",
-                        margin: "0 auto",
-                        boxShadow: "10px 10px 10px 10px rgba(0, 0, 0, 0.4)",
+                        width: "300px",
+                        top: "10%",
+                        left: "1%",
+                        justifySelf: "center",
+                        height: "80vh",
+                        boxShadow: "4px 4px 4px 4px rgba(0, 0, 0, 0.4)",
                         borderRadius: "8px",
                         backgroundColor: "rgb(179, 200, 207)",
-                        backdropFilter: "blur(8px)",
+                        backdropFilter: "blur(6px)",
                         zIndex: 9999,
                     },
                 }}
-                sx={{
-                    "& .MuiBackdrop-root": {
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    },
+                // Make sure no backdrop is shown
+                ModalProps={{
+                    hideBackdrop: true,
                 }}
             >
                 <Box
@@ -82,11 +78,19 @@ export default function MachineSettings({message}) {
                             width: '70%',
                             whiteSpace: 'normal',
                             wordWrap: 'break-word',
+                            whiteSpace: 'pre-wrap',
                             alignSelf: 'center',
                             justifySelf: 'center',
                         }}>
                             <Typography variant="body1">
-                                {message.current}
+                                {
+                                    message.current.split('++').map((line, idx) => (
+                                    <React.Fragment key={idx}>
+                                        {line}
+                                        <br />
+                                        <br />
+                                    </React.Fragment>))
+                                }
                             </Typography>
                         </Box>
                     </Box>
