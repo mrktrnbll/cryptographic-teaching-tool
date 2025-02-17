@@ -1,4 +1,4 @@
-import {ROTOR_PAIRINGS, NOTCHES, ALPHABET} from "src/components/engima-parts/Variables";
+import {ROTOR_PAIRINGS, NOTCHES, ALPHABET} from "./Variables";
 
 export const printRotors: () => void = () => {
     console.log(ROTOR_PAIRINGS, NOTCHES);

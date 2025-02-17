@@ -1,6 +1,6 @@
-import {runLetterThroughPlugboard} from "src/components/engima-parts/Plugboard";
-import {reflectLetter} from "src/components/engima-parts/Reflector";
-import {Rotor} from "src/components/engima-parts/Rotors";
+import {runLetterThroughPlugboard} from "./Plugboard";
+import {reflectLetter} from "./Reflector";
+import {Rotor} from "./Rotors";
 
 
 export class EnigmaMachine {
