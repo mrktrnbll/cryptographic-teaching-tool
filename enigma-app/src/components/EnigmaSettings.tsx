@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 
-export default function EnigmaSettings({open, setOpen, animatePlugboard}) {
+export default function EnigmaSettings({open, setOpen, animatePlugboard, enigmaMachine}) {
     const [message, setMessage] = React.useState("");
     const [throwDialog, setThrowDialog] = React.useState(false);
 
@@ -29,39 +29,35 @@ export default function EnigmaSettings({open, setOpen, animatePlugboard}) {
 
         if (from.value === "" || to.value === "") {
             setMessage("Plugboard settings are set to default. A -> A, B -> B, etc.");
-            setThrowDialog(true);
             return;
         } else if (from.value.length !== to.value.length) {
             setMessage("Plugboard settings are invalid. Please make sure the number of characters in 'From' and 'To' are the same.");
-            setThrowDialog(true);
             return;
         } else if (from.value.length > 13) {
             setMessage("Plugboard settings are invalid. There can only be 13 pairs of characters. Please remove some pairs.");
-            setThrowDialog(true);
             return;
         } else {
             const response = "A letter cannot map to two different letters. Please make sure the characters in 'From' and 'To' are unique.";
             for (let i = 0; i < from.value.length; i++) {
                 if (from.value[i] === to.value[i]) {
                     setMessage("Plugboard settings are invalid. Please make sure the characters in 'From' and 'To' are not the same. Just leave it empty if you want to set it to default.");
-                    setThrowDialog(true);
                     return;
                 } else if (!uniqueCharacter(from.value, from.value[i])) {
                     setMessage(response);
-                    setThrowDialog(true);
                     return;
                 } else if (!uniqueCharacter(to.value, to.value[i])) {
                     setMessage(response);
-                    setThrowDialog(true);
                     return;
                 }
             }
         }
         if (!throwDialog) {
+            setMessage(`Plugboard settings are valid. ${from.value.toUpperCase()} -> ${to.value.toUpperCase()}`);
+            setThrowDialog(true);
             setOpen(false);
+            enigmaMachine.current.plugboard.changePlugboardSettings(from.value.toUpperCase(), to.value.toUpperCase());
             return;
         }
-        setMessage(`Plugboard settings are valid. ${from.value.toUpperCase()} -> ${to.value.toUpperCase()}`);
     }
 
     return (

@@ -1,13 +1,15 @@
-import {runLetterThroughPlugboard} from "./Plugboard";
+import {Plugboard} from "./Plugboard";
 import {reflectLetter} from "./Reflector";
 import {Rotor} from "./Rotors";
 
 
 export class EnigmaMachine {
     rotors: Rotor[];
+    plugboard: Plugboard;
 
-    constructor(rotors: Rotor[]) {
+    constructor(rotors: Rotor[], plugboard: Plugboard) {
         this.rotors = rotors;
+        this.plugboard = plugboard;
     }
 
     rotateRotors(): void {
@@ -17,11 +19,11 @@ export class EnigmaMachine {
     runLetterThroughMachine(letter: string): string {
         this.rotateRotors();
 
-        const letterAfterPlugboard: string = runLetterThroughPlugboard(letter);
+        const letterAfterPlugboard: string = this.plugboard.runLetterThroughPlugboard(letter);
         const letterAfterRotors: string = this.rotors[0].runLetterThroughRotor(letterAfterPlugboard, true);
         const letterAfterReflector: string = reflectLetter(letterAfterRotors);
         const letterAfterRotorsBackward: string = this.rotors[2].runLetterThroughRotor(letterAfterReflector, false);
-        return runLetterThroughPlugboard(letterAfterRotorsBackward)
+        return this.plugboard.runLetterThroughPlugboard(letterAfterRotorsBackward)
     } // if this works imma crazy --- this comment aged well :/
 }
 
