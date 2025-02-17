@@ -34,7 +34,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
     const lampsRef = useRef();
     const rotorPlanesRef = useRef();
-    const isAnimatingPlugboard = useRef(false);
 
     const ROTOR_HEIGHT = 0.003
 
@@ -120,38 +119,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         const plugs = gltf.scene.getObjectByName("plugs");
         return [plugs, plugWires];
     }
-
-    // const animatePlugboard = () => {
-    //     // Prevent multiple animations from stacking
-    //     if (isAnimatingPlugboard.current) return;
-    //     isAnimatingPlugboard.current = true;
-    //
-    //     // Ensure plugs and plugWires are defined
-    //     if (!plugs || !plugWires) {
-    //         isAnimatingPlugboard.current = false;
-    //         return;
-    //     }
-    //
-    //     if (!(plugs.material as any).isCloned) {
-    //         plugs.material = (plugs.material as any).clone();
-    //         (plugs.material as any).isCloned = true;
-    //     }
-    //
-    //     if (!(plugWires.material as any).isCloned) {
-    //         plugWires.material = (plugWires.material as any).clone();
-    //         (plugWires.material as any).isCloned = true;
-    //     }
-    //
-    //     (plugWires.material as any).emissive.setHex(0xff1616);
-    //     (plugs.material as any).emissive.setHex(0xe1984f);
-    //
-    //     setTimeout(() => {
-    //         (plugs.material as any).emissive.setHex(0x000000);
-    //         (plugWires.material as any).emissive.setHex(0x000000);
-    //         isAnimatingPlugboard.current = false;
-    //     }, 2000);
-    // };
-
 
     function animatePlugboard() {
         if (!plugsRef.current || !plugWiresRef.current) {
