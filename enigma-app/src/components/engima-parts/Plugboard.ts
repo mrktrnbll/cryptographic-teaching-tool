@@ -15,6 +15,7 @@ export const runLetterThroughPlugboard: (letter: string) => string = (letter: st
     }
 }
 
-// TODO:
-//  - add way to set plugboard settings
-//  - test runLetterThroughPlugboard(), refactored so works similar as Reflector passthrough funciton
+export const changePlugboardSettings: (from: string, to: string) => void = (from: string, to: string) => {
+    PLUGBOARD_SETTINGS.forward = from;
+    PLUGBOARD_SETTINGS.backward = to;
+}
