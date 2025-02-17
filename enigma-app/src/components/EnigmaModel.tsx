@@ -71,19 +71,19 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     function lightUpLamp(mesh:Mesh, color = 0xffff00, duration = 500) {
         if (!mesh) return;
 
-        if (!mesh.material.isCloned) {
-            mesh.material = mesh.material.clone();
-            mesh.material.isCloned = true;
+        if (!(mesh.material as any).isCloned) {
+            mesh.material = (mesh.material as any).clone();
+            (mesh.material as any).isCloned = true;
         }
 
-        mesh.material.emissive.setHex(color);
+        (mesh.material as any).emissive.setHex(color);
 
         setTimeout(() => {
-            mesh.material.emissive.setHex(0x000000);
+            (mesh.material as any).emissive.setHex(0x000000);
         }, duration);
     }
 
-    function getLamps(gltf: unknown) {
+    function getLamps(gltf: any) {
         const lamps = {};
         const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -94,11 +94,11 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 lamps[letter.toUpperCase()] = lampObject;
             }
         });
-        lampsRef.current = lamps;
+        (lampsRef as any).current = lamps;
         return lamps;
     }
 
-    function getRotors(gltf: unknown) {
+    function getRotors(gltf: any) {
         const rotors = {};
         const rotorNames = "1 2 3".split(" ");
 
@@ -116,29 +116,29 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         return rotors;
     }
 
-    function getPlugBoard(gltf) {
+    function getPlugBoard(gltf: any) {
         plugWires = gltf.scene.getObjectByName("plug_wires");
         plugs = gltf.scene.getObjectByName("plugs");
         return [plugs, plugWires];
     }
 
     function animatePlugboard() {
-        if (!plugs.material.isCloned) {
-            plugs.material = plugs.material.clone();
-            plugs.material.isCloned = true;
+        if (!(plugs.material as any).isCloned) {
+            plugs.material = (plugs.material as any).clone();
+            (plugs.material as any).isCloned = true;
         }
 
-        if (!plugWires.material.isCloned) {
-            plugs.material = plugs.material.clone();
-            plugs.material.isCloned = true;
+        if (!(plugWires.material as any).isCloned) {
+            plugs.material = (plugs.material as any).clone();
+            (plugs.material as any).isCloned = true;
         }
 
-        plugWires.material.emissive.setHex(0xff1616);
-        plugs.material.emissive.setHex(0xe1984f);
+        (plugWires.material as any).emissive.setHex(0xff1616);
+        (plugs.material as any).emissive.setHex(0xe1984f);
 
         setTimeout(() => {
-            plugs.material.emissive.setHex(0x000000);
-            plugWires.material.emissive.setHex(0x000000);
+            (plugs.material as any).emissive.setHex(0x000000);
+            (plugWires.material as any).emissive.setHex(0x000000);
         }, 2000);
 
         // TODO: got to add this function as a call when "walkthrough"
@@ -191,7 +191,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         return newRotorPlanes
     }
 
-    function updateTextOnPlane(plane: unknown, newRotorValue: number) {
+    function updateTextOnPlane(plane: any, newRotorValue: number) {
         const material = plane.material;
         const texture = material.map;
         const canvas = texture.image;
@@ -287,7 +287,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         camera.position.set(-6, 6, 4);
 
         renderer.setSize(window.innerWidth, window.innerHeight);
-        containerRef.current.appendChild(renderer.domElement);
+        (containerRef as any).current.appendChild(renderer.domElement);
 
         controls.enableDamping = true;
         controls.dampingFactor = 0.1;
@@ -298,7 +298,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
         const loader = new GLTFLoader();
         loader.load('lamp_changed/lamp_ammended.gltf',
-            (gltf: unknown) => {
+            (gltf: any) => {
                 scene.add(gltf.scene);
                 gltf.scene.position.set(0,-1,0);
                 gltf.scene.scale.set(0.3, 0.3, 0.3);
@@ -308,14 +308,14 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 [plugs, plugWires] = getPlugBoard(gltf);
 
                 if (rotors) {
-                    const newRotorPlanes = createDefaultRotorValuePlanes();
+                    const newRotorPlanes: any = createDefaultRotorValuePlanes();
                     setRotorPlanes(newRotorPlanes);
                 }
 
                 if (plugs && plugWires) {
                     animatePlugboard();
                 }
-                const arrowDict = addAllRotorArrows(scene);
+                const arrowDict: any = addAllRotorArrows(scene);
                 setArrows(arrowDict)
 
                 setLoadingProgress(false);
@@ -337,11 +337,11 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     }, [camera, controls]);
 
     useEffect(() => {
-        lampsRef.current = lamps;
+        (lampsRef as any).current = lamps;
     }, [lamps]);
 
     useEffect(() => {
-        rotorPlanesRef.current = rotorPlanes;
+        (rotorPlanesRef as any).current = rotorPlanes;
     }, [rotorPlanes]);
 
     useEffect(() => {
@@ -368,15 +368,15 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
                 if (rotorPlanesRef.current) {
                     updateTextOnPlane(
-                        rotorPlanesRef.current.rotor1,
+                        (rotorPlanesRef.current as any).rotor1,
                         ALPHABET.indexOf(updatedRotors[0].window) + 1
                     );
                     updateTextOnPlane(
-                        rotorPlanesRef.current.rotor2,
+                        (rotorPlanesRef.current as any).rotor2,
                         ALPHABET.indexOf(updatedRotors[1].window) + 1
                     );
                     updateTextOnPlane(
-                        rotorPlanesRef.current.rotor3,
+                        (rotorPlanesRef.current as any).rotor3,
                         ALPHABET.indexOf(updatedRotors[2].window) + 1
                     );
                 }
@@ -441,39 +441,39 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             return;
         }
 
-        if (clickedObject === arrows.rotor1Down) {
+        if (clickedObject === (arrows as any).rotor1Down) {
             newRotorValue = minusAddRotorValue(rotorValues[0], -1);
-            updateTextOnPlane(rotorPlanes.rotor1, newRotorValue);
+            updateTextOnPlane((rotorPlanes as any).rotor1, newRotorValue);
             setRotorValues([newRotorValue, rotorValues[1], rotorValues[2]]);
             enigmaMachineRef.current.rotors[0].updatePosition(newRotorValue);
             console.log(newRotorValue)
-        } else if (clickedObject === arrows.rotor1Up) {
+        } else if (clickedObject === (arrows as any).rotor1Up) {
             newRotorValue = minusAddRotorValue(rotorValues[0], 1);
-            updateTextOnPlane(rotorPlanes.rotor1, newRotorValue);
+            updateTextOnPlane((rotorPlanes as any).rotor1, newRotorValue);
             setRotorValues([newRotorValue, rotorValues[1], rotorValues[2]]);
             enigmaMachineRef.current.rotors[0].updatePosition(newRotorValue);
             console.log(newRotorValue)
-        } else if (clickedObject === arrows.rotor2Down) {
+        } else if (clickedObject === (arrows as any).rotor2Down) {
             newRotorValue = minusAddRotorValue(rotorValues[1], -1);
-            updateTextOnPlane(rotorPlanes.rotor2, newRotorValue);
+            updateTextOnPlane((rotorPlanes as any).rotor2, newRotorValue);
             setRotorValues([rotorValues[0], newRotorValue, rotorValues[2]]);
             enigmaMachineRef.current.rotors[1].updatePosition(newRotorValue);
             console.log(newRotorValue)
-        } else if (clickedObject === arrows.rotor2Up) {
+        } else if (clickedObject === (arrows as any).rotor2Up) {
             newRotorValue = minusAddRotorValue(rotorValues[1], 1);
-            updateTextOnPlane(rotorPlanes.rotor2, newRotorValue);
+            updateTextOnPlane((rotorPlanes as any).rotor2, newRotorValue);
             setRotorValues([rotorValues[0], newRotorValue, rotorValues[2]]);
             enigmaMachineRef.current.rotors[1].updatePosition(newRotorValue);
             console.log(newRotorValue)
-        } else if (clickedObject === arrows.rotor3Down) {
+        } else if (clickedObject === (arrows as any).rotor3Down) {
             newRotorValue = minusAddRotorValue(rotorValues[2], -1);
-            updateTextOnPlane(rotorPlanes.rotor3, newRotorValue);
+            updateTextOnPlane((rotorPlanes as any).rotor3, newRotorValue);
             setRotorValues([rotorValues[0], rotorValues[1], newRotorValue]);
             enigmaMachineRef.current.rotors[2].updatePosition(newRotorValue);
             console.log(newRotorValue)
-        } else if (clickedObject === arrows.rotor3Up) {
+        } else if (clickedObject === (arrows as any).rotor3Up) {
             newRotorValue = minusAddRotorValue(rotorValues[2], 1);
-            updateTextOnPlane(rotorPlanes.rotor3, newRotorValue);
+            updateTextOnPlane((rotorPlanes as any).rotor3, newRotorValue);
             setRotorValues([rotorValues[0], rotorValues[1], newRotorValue]);
             enigmaMachineRef.current.rotors[2].updatePosition(newRotorValue);
             console.log(newRotorValue)

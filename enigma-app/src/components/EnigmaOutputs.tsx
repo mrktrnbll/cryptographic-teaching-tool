@@ -66,7 +66,6 @@ export default function MachineSettings({message, open, setOpen}) {
                         </Box>
                         <Box sx={{
                             width: '70%',
-                            whiteSpace: 'normal',
                             wordWrap: 'break-word',
                             whiteSpace: 'pre-wrap',
                             alignSelf: 'center',
