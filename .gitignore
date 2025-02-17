@@ -4,3 +4,4 @@
 enigma-app/.next
 enigma-app/pnpm-lock.yaml
 enigma-app/node_modules
+enigma-app/out
