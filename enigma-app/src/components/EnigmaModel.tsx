@@ -521,7 +521,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 >
                     <TextSnippetIcon />
                 </Button>
-                <Dialog open={open} onClose={handleToClose}>
+                <Dialog sx={{zIndex: 10000}} open={open} onClose={handleToClose}>
                     <DialogTitle>Invalid Input</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
