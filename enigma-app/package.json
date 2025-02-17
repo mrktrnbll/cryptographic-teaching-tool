@@ -7,15 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "npm run pages:build && wrangler pages dev",
-    "deploy": "npm run pages:build && wrangler pages deploy"
+    "test": "jest"
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
-    "@material-ui/core": "5.0.0-beta.5",
     "@mui/icons-material": "^6.1.8",
     "@mui/material": "^6.1.8",
     "@react-three/drei": "^9.117.2",

@@ -11,7 +11,8 @@ import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {EnigmaMachine} from "../../src/components/engima-parts/EnigmaMachine";
 import {Rotor} from "../../src/components/engima-parts/Rotors";
 import {ALPHABET} from "../../src/components/engima-parts/Variables";
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
+import {Dialog, Button, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+// import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 
 import EnigmaOutputs from "../../src/components/EnigmaOutputs";
 import EnigmaSettings from "../../src/components/EnigmaSettings";
