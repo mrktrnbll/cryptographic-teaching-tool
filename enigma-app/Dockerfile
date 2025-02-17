@@ -5,7 +5,6 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package*.json ./
 RUN npm install -g pnpm
-RUN pnpm install --prod=true
 
 FROM deps AS builder
 WORKDIR /app
