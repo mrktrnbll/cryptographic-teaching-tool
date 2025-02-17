@@ -559,7 +559,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 <EnigmaOutputs message={message} open={openNotes} setOpen={setOpenNotes}/>
             </div>
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <EnigmaSettings open={openSettings}/>
+                <EnigmaSettings open={openSettings} setOpen={setOpenSettings}/>
             </div>
         </div>
     )
