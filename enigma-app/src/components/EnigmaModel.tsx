@@ -1,6 +1,6 @@
 'use client'
 
-import React, {MutableRefObject, useEffect, useRef, useState} from "react";
+import React, {MutableRefObject, useEffect, useRef, useState, useCallback} from "react";
 import * as THREE from 'three';
 import {Mesh, Object3D, Object3DEventMap} from 'three';
 
@@ -12,7 +12,6 @@ import {EnigmaMachine} from "../../src/components/engima-parts/EnigmaMachine";
 import {Rotor} from "../../src/components/engima-parts/Rotors";
 import {ALPHABET} from "../../src/components/engima-parts/Variables";
 import {Dialog, Button, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
-// import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 
 import EnigmaOutputs from "../../src/components/EnigmaOutputs";
 import EnigmaSettings from "../../src/components/EnigmaSettings";
@@ -30,11 +29,12 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
     let lamps: { [s: string]: Mesh; };
     let rotors: { [s: string]: Mesh; };
-    let plugs: Mesh;
-    let plugWires: Mesh;
+    const plugsRef = useRef<THREE.Mesh | null>(null);
+    const plugWiresRef = useRef<THREE.Mesh | null>(null);
 
     const lampsRef = useRef();
     const rotorPlanesRef = useRef();
+    const isAnimatingPlugboard = useRef(false);
 
     const ROTOR_HEIGHT = 0.003
 
@@ -116,32 +116,69 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     }
 
     function getPlugBoard(gltf: any) {
-        plugWires = gltf.scene.getObjectByName("plug_wires");
-        plugs = gltf.scene.getObjectByName("plugs");
+        const plugWires = gltf.scene.getObjectByName("plug_wires");
+        const plugs = gltf.scene.getObjectByName("plugs");
         return [plugs, plugWires];
     }
 
+    // const animatePlugboard = () => {
+    //     // Prevent multiple animations from stacking
+    //     if (isAnimatingPlugboard.current) return;
+    //     isAnimatingPlugboard.current = true;
+    //
+    //     // Ensure plugs and plugWires are defined
+    //     if (!plugs || !plugWires) {
+    //         isAnimatingPlugboard.current = false;
+    //         return;
+    //     }
+    //
+    //     if (!(plugs.material as any).isCloned) {
+    //         plugs.material = (plugs.material as any).clone();
+    //         (plugs.material as any).isCloned = true;
+    //     }
+    //
+    //     if (!(plugWires.material as any).isCloned) {
+    //         plugWires.material = (plugWires.material as any).clone();
+    //         (plugWires.material as any).isCloned = true;
+    //     }
+    //
+    //     (plugWires.material as any).emissive.setHex(0xff1616);
+    //     (plugs.material as any).emissive.setHex(0xe1984f);
+    //
+    //     setTimeout(() => {
+    //         (plugs.material as any).emissive.setHex(0x000000);
+    //         (plugWires.material as any).emissive.setHex(0x000000);
+    //         isAnimatingPlugboard.current = false;
+    //     }, 2000);
+    // };
+
+
     function animatePlugboard() {
-        if (!(plugs.material as any).isCloned) {
-            plugs.material = (plugs.material as any).clone();
-            (plugs.material as any).isCloned = true;
+        if (!plugsRef.current || !plugWiresRef.current) {
+            console.log("HELLO")
+            return
+        };
+
+        const plugsMesh = plugsRef.current;
+        const plugWiresMesh = plugWiresRef.current;
+
+        if (!(plugsMesh.material as any).isCloned) {
+            plugsMesh.material = (plugsMesh.material as any).clone();
+            (plugsMesh.material as any).isCloned = true;
         }
 
-        if (!(plugWires.material as any).isCloned) {
-            plugs.material = (plugs.material as any).clone();
-            (plugs.material as any).isCloned = true;
+        if (!(plugWiresMesh.material as any).isCloned) {
+            plugWiresMesh.material = (plugWiresMesh.material as any).clone();
+            (plugWiresMesh.material as any).isCloned = true;
         }
 
-        (plugWires.material as any).emissive.setHex(0xff1616);
-        (plugs.material as any).emissive.setHex(0xe1984f);
+        (plugWiresMesh.material as any).emissive.setHex(0xff1616);
+        (plugsMesh.material as any).emissive.setHex(0xe1984f);
 
         setTimeout(() => {
-            (plugs.material as any).emissive.setHex(0x000000);
-            (plugWires.material as any).emissive.setHex(0x000000);
+            (plugsMesh.material as any).emissive.setHex(0x000000);
+            (plugWiresMesh.material as any).emissive.setHex(0x000000);
         }, 2000);
-
-        // TODO: got to add this function as a call when "walkthrough"
-        // wants to see it.
     }
 
     function createTextPlane(textValue: number) {
@@ -304,14 +341,14 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
                 lamps = getLamps(gltf);
                 rotors = getRotors(gltf);
-                [plugs, plugWires] = getPlugBoard(gltf);
+                [plugsRef.current, plugWiresRef.current] = getPlugBoard(gltf);
 
                 if (rotors) {
                     const newRotorPlanes: any = createDefaultRotorValuePlanes();
                     setRotorPlanes(newRotorPlanes);
                 }
 
-                if (plugs && plugWires) {
+                if (plugsRef && plugWiresRef) {
                     animatePlugboard();
                 }
                 const arrowDict: any = addAllRotorArrows(scene);
@@ -401,6 +438,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         const mouse = new THREE.Vector2();
 
         function onPointerDown(event: { clientX: number; clientY: number; }) {
+
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -493,10 +531,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         }
     }
 
-    useEffect(() => {
-        console.log(openSettings)
-    }, [openSettings])
-
     return (
         <div>
             <div ref={containerRef}
@@ -559,7 +593,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 <EnigmaOutputs message={message} open={openNotes} setOpen={setOpenNotes}/>
             </div>
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <EnigmaSettings open={openSettings} setOpen={setOpenSettings}/>
+                <EnigmaSettings open={openSettings} setOpen={setOpenSettings} animatePlugboard={() => animatePlugboard()}/>
             </div>
         </div>
     )
