@@ -1,17 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import {Box, Button, Divider, Drawer, Typography} from "@mui/material";
+import React from 'react';
+import {Box, Button, Divider, Drawer, TextField, Typography} from "@mui/material";
 
 
-export default function EnigmaSettings({open, setOpen}) {
-
-    const handleToggle = () => {
-        setOpen((prev)=> {
-            console.log("Toggled", prev);
-            return !prev;
-        });
-    };
+export default function EnigmaSettings({open}) {
 
     return (
         <div style={{zIndex: 9999, position: "relative", minHeight: "100vh"}}>
@@ -59,14 +52,17 @@ export default function EnigmaSettings({open, setOpen}) {
                         </Box>
 
                         <Box>
-                            <Typography marginLeft={5} variant="subtitle1">
+                            <Typography variant="subtitle1">
                                 Plugboard Settings
                             </Typography>
-                            ...
+                            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                <TextField sx={{marginBottom: 1}} id="from-input" label="From" variant="outlined" />
+                                <TextField id="to-input" label="To" variant="outlined" />
+                            </Box>
                         </Box>
 
                         <Box marginTop={2}>
-                            <Typography marginLeft={5} variant="subtitle1">
+                            <Typography variant="subtitle1">
                                 Rotor Settings
                             </Typography>
                             ...

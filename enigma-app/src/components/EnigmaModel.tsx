@@ -49,10 +49,8 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     const [openNotes, setOpenNotes] = React.useState(false);
     const handleClickToOpen = () => {setOpen(true)};
     const handleToClose = () => {setOpen(false)};
-    const handleToggle = (set) => {
-        set((prev)=> {
-            return !prev;
-        });
+    const handleToggle = (setState) => {
+        setState((prevState) => !prevState);
     };
 
     function createEnigmaModel(): EnigmaMachine {
@@ -350,6 +348,9 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             const pressedLetter = event.key.toUpperCase();
 
             if (enigmaMachineRef.current) {
+                if (openSettings) {
+                    return;
+                }
                 if (!ALPHABET.includes(pressedLetter)) {
                     if (pressedLetter === " ") {
                         event.preventDefault();
@@ -393,7 +394,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
+    }, [openSettings, openNotes]);
 
     useEffect(() => {
         const raycaster = new THREE.Raycaster();
@@ -492,6 +493,10 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         }
     }
 
+    useEffect(() => {
+        console.log(openSettings)
+    }, [openSettings])
+
     return (
         <div>
             <div ref={containerRef}
@@ -508,7 +513,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             </div>
             <div>
                 <Button
-                    onClick={() => handleToggle(setOpenNotes)}
+                    onClick={() => {setOpenNotes(!openNotes)}}
                     disabled={openSettings}
                     variant="contained"
                     sx={{
@@ -529,14 +534,13 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleToClose}
-                                color="primary" autoFocus>
+                        <Button onClick={handleToClose} color="primary" autoFocus>
                             Close
                         </Button>
                     </DialogActions>
                 </Dialog>
                 <Button
-                    onClick={() => handleToggle(setOpenSettings)}
+                    onClick={() => {setOpenSettings(!openSettings)}}
                     disabled={openNotes}
                     variant="contained"
                     sx={{
@@ -555,7 +559,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 <EnigmaOutputs message={message} open={openNotes} setOpen={setOpenNotes}/>
             </div>
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <EnigmaSettings open={openSettings} setOpen={setOpenSettings}/>
+                <EnigmaSettings open={openSettings}/>
             </div>
         </div>
     )
