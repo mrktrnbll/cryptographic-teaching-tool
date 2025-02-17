@@ -6,6 +6,36 @@ import {Box, Button, Divider, Drawer, TextField, Typography} from "@mui/material
 
 export default function EnigmaSettings({open}) {
 
+    const uniqueCharacter = (string: string, letter: string) => {
+        return string.match(new RegExp(letter, "gi")).length === 1;
+    };
+
+    const checkPlugboardSettings: () => string = (): string => {
+        const from = document.getElementById("from-input") as HTMLInputElement;
+        const to = document.getElementById("to-input") as HTMLInputElement;
+
+        if (from.value === "" || to.value === "") {
+            return "Plugboard settings are set to default. A -> A, B -> B, etc.";
+        } else if (from.value.length !== to.value.length) {
+            return "Plugboard settings are invalid. Please make sure the number of characters in 'From' and 'To' are the same.";
+        } else if (from.value.length > 13) {
+            return "Plugboard settings are invalid. There can only be 13 pairs of characters. Please remove some pairs.";
+        } else {
+            const response = "A letter cannot map to two different letters. Please make sure the characters in 'From' and 'To' are unique.";
+            for (let i = 0; i < from.value.length; i++) {
+                if (from.value[i] === to.value[i]) {
+                    return "Plugboard settings are invalid. Please make sure the characters in 'From' and 'To' are not the same. Just leave it empty if you want to set it to default.";
+                } else if (!uniqueCharacter(from.value, from.value[i])) {
+                    return response;
+                } else if (!uniqueCharacter(to.value, to.value[i])) {
+                    return response;
+                }
+            }
+        }
+
+        return `Plugboard settings are valid. ${from.value.toUpperCase()} -> ${to.value.toUpperCase()}`;
+    }
+
     return (
         <div style={{zIndex: 9999, position: "relative", minHeight: "100vh"}}>
             <Drawer
@@ -74,7 +104,7 @@ export default function EnigmaSettings({open}) {
                             display: "flex",
                             flexDirection: "column",
                         }}>
-                            <Button onClick={() => console.log("hello")}>Save Settings</Button>
+                            <Button onClick={() => console.log(checkPlugboardSettings())}>Save Settings</Button>
                             <Typography variant="caption" color="textSecondary">
                                 @mrktrnbll
                             </Typography>
