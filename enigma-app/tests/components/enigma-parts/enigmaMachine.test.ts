@@ -1,5 +1,5 @@
 import { Rotor } from "src/components/engima-parts/Rotors";
-import { EnigmaMachine } from "src/components/engima-parts/enigmaMachine";
+import { EnigmaMachine } from "@/components/engima-parts/EnigmaMachine";
 
 function createEnigmaMachine(
     rotor1Setting: string,

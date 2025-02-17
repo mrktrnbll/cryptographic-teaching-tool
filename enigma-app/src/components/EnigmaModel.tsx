@@ -8,13 +8,13 @@ import {Mesh, Object3D, Object3DEventMap} from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 // @ts-expect-error - no types for this package
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {EnigmaMachine} from "src/components/engima-parts/enigmaMachine";
-import {Rotor} from "src/components/engima-parts/Rotors";
-import {ALPHABET} from "src/components/engima-parts/Variables";
+import {EnigmaMachine} from "../../src/components/engima-parts/EnigmaMachine";
+import {Rotor} from "../../src/components/engima-parts/Rotors";
+import {ALPHABET} from "../../src/components/engima-parts/Variables";
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 
-import EnigmaOutputs from "src/components/EnigmaOutputs";
-import EnigmaSettings from "src/components/EnigmaSettings";
+import EnigmaOutputs from "../../src/components/EnigmaOutputs";
+import EnigmaSettings from "../../src/components/EnigmaSettings";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 
