@@ -10,13 +10,14 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {EnigmaMachine} from "../../src/components/engima-parts/EnigmaMachine";
 import {Rotor} from "../../src/components/engima-parts/Rotors";
-import {ALPHABET} from "../../src/components/engima-parts/Variables";
+import {ALPHABET, PLUGBOARD_SETTINGS} from "../../src/components/engima-parts/Variables";
 import {Dialog, Button, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 import EnigmaOutputs from "../../src/components/EnigmaOutputs";
 import EnigmaSettings from "../../src/components/EnigmaSettings";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import TextSnippetIcon from "@mui/icons-material/TextSnippet";
+import {Plugboard} from "../../src/components/engima-parts/Plugboard";
 
 
 export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
@@ -48,22 +49,20 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     const [openNotes, setOpenNotes] = React.useState(false);
     const handleClickToOpen = () => {setOpen(true)};
     const handleToClose = () => {setOpen(false)};
-    const handleToggle = (setState) => {
-        setState((prevState) => !prevState);
-    };
 
     function createEnigmaModel(): EnigmaMachine {
         // on load rotors are set to 1, 1, 1 - this aligns with the rotors below
         const rotor1: Rotor = new Rotor("1", "A");
         const rotor2: Rotor = new Rotor("2", "A");
         const rotor3: Rotor = new Rotor("3", "A");
+        const plugboard = new Plugboard(PLUGBOARD_SETTINGS);
 
         rotor1.setNextRotor(rotor2);
         rotor2.setNextRotor(rotor3);
         rotor2.setPreviousRotor(rotor1);
         rotor3.setPreviousRotor(rotor2);
 
-        return new EnigmaMachine([rotor1, rotor2, rotor3]);
+        return new EnigmaMachine([rotor1, rotor2, rotor3], plugboard);
     }
 
     function lightUpLamp(mesh:Mesh, color = 0xffff00, duration = 500) {
@@ -560,7 +559,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 <EnigmaOutputs message={message} open={openNotes} setOpen={setOpenNotes}/>
             </div>
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <EnigmaSettings open={openSettings} setOpen={setOpenSettings} animatePlugboard={() => animatePlugboard()}/>
+                <EnigmaSettings open={openSettings} setOpen={setOpenSettings} animatePlugboard={() => animatePlugboard()} enigmaMachine={enigmaMachineRef}/>
             </div>
         </div>
     )
