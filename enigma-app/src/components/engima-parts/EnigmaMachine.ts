@@ -1,6 +1,7 @@
 import {Plugboard} from "./Plugboard";
 import {reflectLetter} from "./Reflector";
 import {Rotor} from "./Rotors";
+import {PLUGBOARD_SETTINGS} from "@/components/engima-parts/Variables";
 
 
 export class EnigmaMachine {
@@ -37,7 +38,7 @@ export const doTestThing = () => {
     rotor2.setPreviousRotor(rotor1);
     rotor3.setPreviousRotor(rotor2);
 
-    const enigmaMachine = new EnigmaMachine([rotor1, rotor2, rotor3]);
+    const enigmaMachine = new EnigmaMachine([rotor1, rotor2, rotor3], new Plugboard(PLUGBOARD_SETTINGS));
 
     console.log(enigmaMachine.runLetterThroughMachine("M"));
     console.log(enigmaMachine.runLetterThroughMachine("O"));
