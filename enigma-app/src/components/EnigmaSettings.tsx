@@ -19,8 +19,18 @@ export default function EnigmaSettings({open, setOpen, animatePlugboard, enigmaM
     const [message, setMessage] = React.useState("");
     const [throwDialog, setThrowDialog] = React.useState(false);
 
-    const uniqueCharacter = (string: string, letter: string) => {
-        return string.match(new RegExp(letter, "gi")).length === 1;
+    const uniqueCharacter = (string: string, letter: string, beZero: boolean) => {
+        // TODO: Fix this weird error and bad error handling
+        try {
+            if (beZero) {
+                return string.match(new RegExp(letter, "gi")).length === 0;
+            } else {
+                return string.match(new RegExp(letter, "gi")).length === 1;
+            }
+        } catch (e) {
+            console.log("that weird error occured")
+            return true;
+        }
     };
 
     const checkPlugboardSettings = () => {
@@ -29,35 +39,50 @@ export default function EnigmaSettings({open, setOpen, animatePlugboard, enigmaM
 
         if (from.value === "" || to.value === "") {
             setMessage("Plugboard settings are set to default. A -> A, B -> B, etc.");
+            setThrowDialog(true);
             return;
         } else if (from.value.length !== to.value.length) {
             setMessage("Plugboard settings are invalid. Please make sure the number of characters in 'From' and 'To' are the same.");
+            setThrowDialog(true);
             return;
         } else if (from.value.length > 13) {
             setMessage("Plugboard settings are invalid. There can only be 13 pairs of characters. Please remove some pairs.");
+            setThrowDialog(true);
             return;
         } else {
             const response = "A letter cannot map to two different letters. Please make sure the characters in 'From' and 'To' are unique.";
             for (let i = 0; i < from.value.length; i++) {
                 if (from.value[i] === to.value[i]) {
                     setMessage("Plugboard settings are invalid. Please make sure the characters in 'From' and 'To' are not the same. Just leave it empty if you want to set it to default.");
+                    setThrowDialog(true);
                     return;
-                } else if (!uniqueCharacter(from.value, from.value[i])) {
+                } else if (!uniqueCharacter(from.value, from.value[i], false)) {
                     setMessage(response);
+                    setThrowDialog(true);
                     return;
-                } else if (!uniqueCharacter(to.value, to.value[i])) {
+                } else if (!uniqueCharacter(to.value, to.value[i], false)) {
                     setMessage(response);
+                    setThrowDialog(true);
+                    return;
+                } else if (!uniqueCharacter(from.value, to.value[i], true)) {
+                    setMessage(response);
+                    setThrowDialog(true);
+                    return;
+                } else if (!uniqueCharacter(to.value, from.value[i], true)) {
+                    setMessage(response);
+                    setThrowDialog(true);
                     return;
                 }
             }
         }
         if (!throwDialog) {
-            setMessage(`Plugboard settings are valid. ${from.value.toUpperCase()} -> ${to.value.toUpperCase()}`);
-            setThrowDialog(true);
-            setOpen(false);
             enigmaMachine.current.plugboard.changePlugboardSettings(from.value.toUpperCase(), to.value.toUpperCase());
+            setOpen(false);
+            console.log("saved enigma")
             return;
         }
+        setMessage(`Plugboard settings are valid. ${from.value.toUpperCase()} -> ${to.value.toUpperCase()}`);
+        setThrowDialog(true);
     }
 
     return (
