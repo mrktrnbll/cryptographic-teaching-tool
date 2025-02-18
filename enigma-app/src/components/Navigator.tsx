@@ -33,7 +33,10 @@ export default function FloatingDrawer() {
         {
             label: 'Plugboard Settings',
             content: "You now should have an idea for how to encrypt and decrypt secret messages as well as how the rotors work. The plugboard is another part of this puzzle.",
-            moreContent2: ""
+            moreContent2: "Open the connection menu at the bottom of your screen. From here we can change the configurations of the plugboard.",
+            moreContent3: 'You have two text fields - "From" and "To". If you add Q to the "From" field and W to the "To" field, then every time you type Q it will encrypt to W and vice versa.',
+            moreContent4: "You will also be zoomed into the plugboard on the engima machine to show that setting up these mappings used to be done manually with a bundle of wires!",
+            moreContent5: "Since there are 26 letters in the alphabet you will notice if you add more than 13 connections then this will not work. Try understand what else might not work.",
         },
     ];
 
@@ -148,6 +151,15 @@ export default function FloatingDrawer() {
                                                         </Typography>
                                                     </>
                                                 )}
+                                                {step.moreContent5 && (
+                                                    <>
+                                                        <br />
+                                                        <Typography variant="body2">
+                                                            {step.moreContent5}
+                                                        </Typography>
+                                                    </>
+                                                )}
+
                                             </Box>
                                         )}
                                     </Step>
