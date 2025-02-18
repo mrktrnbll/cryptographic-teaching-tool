@@ -38,6 +38,22 @@ export default function FloatingDrawer() {
             moreContent4: "You will also be zoomed into the plugboard on the engima machine to show that setting up these mappings used to be done manually with a bundle of wires!",
             moreContent5: "Since there are 26 letters in the alphabet you will notice if you add more than 13 connections then this will not work. Try understand what else might not work.",
         },
+        {
+            label: "Reflector",
+            content: "The reflector is the final part of the enigma machine. You can't see it in this model because it is inside the machine and hidden away.",
+            moreContent2: "The reflector works much like the plugboard but is not changeable by the machine operator. It is the reflector that stops a letter from mapping to itself - this was a major flaw.",
+        },
+        {
+            label: "Breaking the Enigma",
+            content: "The enigma machine was considered unbreakable by the Germans. However, the Alan Turing and his team managed to break the code and decrypt the messages. There was two main ideas used to break the enigma machine:",
+            moreContent2: "  1. The enigma machine could not encrypt a letter to itself. This was a major flaw in the design of the machine. If you have a cypher text you could make a guess of what one of the words was and see if it ever contradicted this rule.",
+            moreContent3: "  2. With the above rule in mind, the team could then use common phrases and words to rule out enigma machine setups.",
+            moreContent4: "There was still one key issue. This took AGES! Alan Turing and his team commited to making a machine that would do this for them."
+        },
+        {
+            label: "Conclusion",
+            content: "???",
+        }
     ];
 
     const toggleDrawer = () => {
@@ -50,6 +66,11 @@ export default function FloatingDrawer() {
 
     const handleBack = () => {
         setActiveStep((prev) => Math.max(prev - 1, 0));
+    };
+
+    const handleFinish = () => {
+        setActiveStep(0);
+        setWalkthroughStarted(false);
     };
 
     const startWalkthrough = () => {
@@ -179,7 +200,7 @@ export default function FloatingDrawer() {
                                 <Button disabled={activeStep === 0} onClick={handleBack}>
                                     Back
                                 </Button>
-                                <Button onClick={handleNext}>
+                                <Button onClick={activeStep === steps.length - 1 ? handleFinish : handleNext}>
                                     {activeStep === steps.length - 1 ? "Finish" : "Next"}
                                 </Button>
                             </Box>
