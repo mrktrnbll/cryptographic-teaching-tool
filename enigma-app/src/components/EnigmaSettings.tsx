@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 
-export default function EnigmaSettings({open, setOpen, animatePlugboard, enigmaMachine}) {
+export default function EnigmaSettings({open, setOpen, animatePlugboard, enigmaMachine, moveToPlugboard}) {
     const [message, setMessage] = React.useState("");
     const [throwDialog, setThrowDialog] = React.useState(false);
 
@@ -149,8 +149,8 @@ export default function EnigmaSettings({open, setOpen, animatePlugboard, enigmaM
                                 Plugboard Settings
                             </Typography>
                             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
-                                <TextField sx={{marginBottom: 1}} id="from-input" label="From" variant="outlined" onInput={animatePlugboard} onFocus={animatePlugboard}/>
-                                <TextField id="to-input" label="To" variant="outlined" onInput={animatePlugboard} onFocus={animatePlugboard}/>
+                                <TextField sx={{marginBottom: 1}} id="from-input" label="From" variant="outlined" onInput={animatePlugboard} onFocus={() => {animatePlugboard(); moveToPlugboard();}}/>
+                                <TextField id="to-input" label="To" variant="outlined" onInput={animatePlugboard} onFocus={() => {animatePlugboard(); moveToPlugboard();}}/>
                             </Box>
                         </Box>
 

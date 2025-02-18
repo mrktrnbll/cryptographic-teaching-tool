@@ -440,6 +440,26 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         }
     } // this is a terrible way to do this lol - % would be better
 
+    function moveToPlugboard() {
+
+        const box = new THREE.Box3().setFromObject(plugWiresRef.current);
+        const targetCenter = box.getCenter(new THREE.Vector3());
+
+        camera.position.set(
+            targetCenter.x - 3,
+            targetCenter.y + 1,
+            targetCenter.z
+        );
+
+        controls.target.set(
+            targetCenter.x,
+            targetCenter.y,
+            targetCenter.z
+        );
+
+        controls.update();
+    }
+
     function handleArrowClick(clickedObject: Object3D<Object3DEventMap>) {
         let addMessageNewLine = true;
         let newRotorValue: number;
@@ -559,7 +579,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 <EnigmaOutputs message={message} open={openNotes} setOpen={setOpenNotes}/>
             </div>
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
-                <EnigmaSettings open={openSettings} setOpen={setOpenSettings} animatePlugboard={() => animatePlugboard()} enigmaMachine={enigmaMachineRef}/>
+                <EnigmaSettings open={openSettings} setOpen={setOpenSettings} animatePlugboard={() => animatePlugboard()} enigmaMachine={enigmaMachineRef} moveToPlugboard={() => moveToPlugboard()} />
             </div>
         </div>
     )
