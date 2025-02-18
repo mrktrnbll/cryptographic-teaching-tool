@@ -25,11 +25,15 @@ export default function FloatingDrawer() {
         },
         {
             label: 'Rotor Mechanics',
-            content: "As you enter a letter, you might notice that the numbers on the machine change! These numbers show the current rotor positions. As you type, the rightmost rotor moves, altering its position and output.",
+            content: "As you enter a letter, you might noticed that the numbers on the machine changed! These numbers show the current rotor positions. As you type, the rightmost rotor moves, altering its position and output.",
+            moreContent2: "If you type the same letter repeatedly do you notice a pattern? Does the letter ever encrypt to itself?",
+            moreContent3: "The answer to the above should be; no and no! There might be a pattern, however it will be far to complex for us to understand. A letter also cannot encrypt to itself!",
+            moreContent4: "One last thing to do. Set the rotor number to 1, 4 and 16. Type any letters in randomly but keep a very close look at the rotor numbers. If you can notice something then you might just have cracked how the rotors work.",
         },
         {
             label: 'Plugboard Settings',
-            content: "Understand how the plugboard further complicates the encryption.",
+            content: "You now should have an idea for how to encrypt and decrypt secret messages as well as how the rotors work. The plugboard is another part of this puzzle.",
+            moreContent2: ""
         },
     ];
 
@@ -78,7 +82,7 @@ export default function FloatingDrawer() {
                         borderRadius: "8px",
                         backgroundColor: "rgb(179, 200, 207)",
                         backdropFilter: "blur(6px)",
-                        zIndex: 9999,
+                        zIndex: 0,
                     },
                 }}
                 ModalProps={{ hideBackdrop: true }}
