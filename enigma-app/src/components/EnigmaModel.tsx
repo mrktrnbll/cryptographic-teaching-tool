@@ -446,7 +446,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         const targetCenter = box.getCenter(new THREE.Vector3());
 
         camera.position.set(
-            targetCenter.x - 3,
+            targetCenter.x - 4.5,
             targetCenter.y + 1,
             targetCenter.z
         );
