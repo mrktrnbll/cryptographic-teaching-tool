@@ -1,23 +1,51 @@
 "use client";
 
 import React, { useState } from "react";
-import { Drawer, Box, Typography, Divider, Button } from "@mui/material";
+import { Drawer, Box, Typography, Divider, Button, Stepper, Step, StepLabel } from "@mui/material";
 
 export default function FloatingDrawer() {
     const [open, setOpen] = useState(false);
+    const [activeStep, setActiveStep] = useState(0);
+    const [walkthroughStarted, setWalkthroughStarted] = useState(false);
 
-    const handleToggle = () => {
-        setOpen((prev)=> {
-            console.log("Toggled", prev);
-            return !prev;
-        });
+    const steps = [
+        {
+            label: 'Introduction',
+            content: "The Enigma machine was a cipher device used during WWII to encrypt Nazi Germany communications. Explore its basic functions.",
+            moreInfo: "Have a little play around with the machine—click some of the rotor arrows, change the plugboard settings, and see what happens!",
+            moreInfo2:  "Try typing in some text and observe if the inputs match the outputs. Once you're ready for a structured tutorial, click 'Start Walkthrough' to begin.",
+        },
+        {
+            label: 'Rotor Mechanics',
+            content: "Learn how the rotating rotors create a massive number of possible settings.",
+        },
+        {
+            label: 'Plugboard Settings',
+            content: "Understand how the plugboard further complicates the encryption.",
+        },
+    ];
+
+    const toggleDrawer = () => {
+        setOpen(!open);
+    };
+
+    const handleNext = () => {
+        setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
+    };
+
+    const handleBack = () => {
+        setActiveStep((prev) => Math.max(prev - 1, 0));
+    };
+
+    const startWalkthrough = () => {
+        setWalkthroughStarted(true);
     };
 
     return (
         <div style={{ zIndex: 9999, position: "relative", minHeight: "80vh" }}>
             <Button
                 variant="contained"
-                onClick={handleToggle}
+                onClick={toggleDrawer}
                 sx={{
                     zIndex: 9999,
                     position: "fixed",
@@ -28,7 +56,6 @@ export default function FloatingDrawer() {
             >
                 Show Tutorial
             </Button>
-
             <Drawer
                 variant="persistent"
                 anchor="left"
@@ -38,88 +65,80 @@ export default function FloatingDrawer() {
                         width: "400px",
                         top: "10%",
                         left: "1%",
-                        justifySelf: "center",
                         height: "80vh",
-                        boxShadow: "4px 4px 4px 4px rgba(0, 0, 0, 0.4)",
+                        boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.4)",
                         borderRadius: "8px",
                         backgroundColor: "rgb(179, 200, 207)",
                         backdropFilter: "blur(6px)",
                         zIndex: 9999,
                     },
                 }}
-                ModalProps={{
-                    hideBackdrop: true,
-                }}
+                ModalProps={{ hideBackdrop: true }}
             >
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "100%",
-                        width: "100%",
-                        padding: 2,
-                        pointerEvents: "auto",
-                    }}
-                >
-                    <Box sx={{ flex: 1, overflowY: "auto", p: 2}}>
-                        <Box sx={{textAlign: 'center'}}>
-                            <Typography variant="h6" gutterBottom>
-                                Breaking the Enigma Machine
-                            </Typography>
-                            <Typography variant="body2">
-                                This is the enigma machine navigator! Let&apos;s get started.
-                            </Typography>
-                            <Divider sx={{ marginY: 2 }} />
-                        </Box>
-
-                        <Box>
-                            <Typography marginLeft={5} variant="subtitle1">
-                                Introduction
-                            </Typography>
-                            The Enigma machine was a cipher device used by Nazi Germany during
-                            World War II to encrypt and decrypt military communications. It
-                            relied on a system of rotating rotors and plugboard connections to
-                            generate complex, ever-changing cyphers. Breaking the enigma machine
-                            would play a crucial role in shortening the war but it was
-                            "unbreakable".
-                        </Box>
-
-                        <Box marginTop={2}>
-                            <Typography marginLeft={5} variant="subtitle1">
-                                Breaking the Enigma
-                            </Typography>
-                            - The Enigma machine had over 158,962,555,217,826,360,000 possible
-                            settings. This made brute force checking near impossible - the
-                            practice of trying every possible combination!
-                            <br />
-                            - On top of this, the setting changed every day! So if the code was
-                            broken, they would have to do it all over again the next day.
-                            <br />
-                            <br />
-                        </Box>
-
-                        <Box textAlign={"center"} justifyItems={"center"}>
-                            <Typography maxWidth={"65%"}>
-                                Have a little play around with the machine, click some of the rotor
-                                arrows, change the plugboard settings and see what happens! Try typing
-                                in some text, are the inputs the same as the outputs?
-                                <br />
-                                Once you have done this and are ready to start the walkthrough, click
-                                below to have a more structured tutorial.
-                                <br />
-                            </Typography>
-                            <Button onClick={() => console.log("hello")}>Start Walkthrough</Button>
-                        </Box>
-
+                <Box sx={{ display: "flex", flexDirection: "column", height: "100%", p: 2 }}>
+                    <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
+                        {activeStep === 0 && !walkthroughStarted ? (
+                            <Box sx={{ textAlign: 'center' }}>
+                                <Typography variant="h6" gutterBottom>
+                                    {steps[0].label}
+                                </Typography>
+                                <Typography variant="body2" gutterBottom>
+                                    {steps[0].content}
+                                </Typography>
+                                <Divider sx={{my:2}}/>
+                                <Typography>
+                                    {steps[0].moreInfo}
+                                </Typography>
+                                <br/>
+                                <Typography>
+                                    {steps[0].moreInfo2}
+                                </Typography>
+                            </Box>
+                        ) : (
+                            <Stepper activeStep={activeStep} orientation="vertical">
+                                {steps.slice(1).map((step, index) => (
+                                    <Step key={step.label}>
+                                        <StepLabel>{step.label}</StepLabel>
+                                        {activeStep === index && (
+                                            <Box sx={{ mt: 1, mb: 1 }}>
+                                                <Typography variant="body2">
+                                                    {step.content}
+                                                </Typography>
+                                            </Box>
+                                        )}
+                                    </Step>
+                                ))}
+                            </Stepper>
+                        )}
                     </Box>
 
-                    <Box sx={{ textAlign: 'center', p: 1 }}>
+                    <Box sx={{ mt: "auto" }}>
+                        {!walkthroughStarted && activeStep === 0 && (
+                            <Button variant="outlined" onClick={startWalkthrough} fullWidth>
+                                Start Walkthrough
+                            </Button>
+                        )}
+                        {walkthroughStarted && (
+                            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                <Button disabled={activeStep === 0} onClick={handleBack}>
+                                    Back
+                                </Button>
+                                <Button onClick={handleNext}>
+                                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+
+                    <Divider sx={{ my: 2 }} />
+                    <Box sx={{ textAlign: "center", pt: 1 }}>
                         <Typography variant="caption" color="textSecondary">
                             @mrktrnbll
                         </Typography>
                     </Box>
                 </Box>
             </Drawer>
+
         </div>
     );
 }
