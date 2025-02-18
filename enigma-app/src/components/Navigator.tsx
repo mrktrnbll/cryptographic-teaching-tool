@@ -13,11 +13,19 @@ export default function FloatingDrawer() {
             label: 'Introduction',
             content: "The Enigma machine was a cipher device used during WWII to encrypt Nazi Germany communications. Explore its basic functions.",
             moreInfo: "Have a little play around with the machine—click some of the rotor arrows, change the plugboard settings, and see what happens!",
-            moreInfo2:  "Try typing in some text and observe if the inputs match the outputs. Once you're ready for a structured tutorial, click 'Start Walkthrough' to begin.",
+            moreInfo2: "Try typing in some text and observe if the inputs match the outputs. Once you're ready for a structured tutorial, click 'Start Walkthrough' to begin.",
+        },
+        {
+            label: 'Guided Encryption',
+            content: "If you didn't get there yourself, no worries! Let's start with the basics.",
+            moreContent: "You will see three numbers on top of the machine, these are just above the keyboard and lampboard (the group of letters that light up when you type). Before you start typing your secret message make sure you remember the numbers and order.",
+            moreContent2: "Once you have done that open the notepad at the bottom of your screen... You are now ready to type your secret message! - use spaces and letters, nothing else works on the enigma.",
+            moreContent3: "The notepad will now have some nonsense text... but don't worry! This is actually just cypher text, and we have the key to decrypt it.",
+            moreContent4: "Using red and green arrows near the rotor's numbers, you can change the rotor positions to the same values you remembered from before encrypting your message. Once done, type the cypher text into the enigma and see if you can decrypt it!",
         },
         {
             label: 'Rotor Mechanics',
-            content: "Learn how the rotating rotors create a massive number of possible settings.",
+            content: "As you enter a letter, you might notice that the numbers on the machine change! These numbers show the current rotor positions. As you type, the rightmost rotor moves, altering its position and output.",
         },
         {
             label: 'Plugboard Settings',
@@ -85,12 +93,12 @@ export default function FloatingDrawer() {
                                 <Typography variant="body2" gutterBottom>
                                     {steps[0].content}
                                 </Typography>
-                                <Divider sx={{my:2}}/>
-                                <Typography>
+                                <Divider sx={{ my: 2 }} />
+                                <Typography variant="body2">
                                     {steps[0].moreInfo}
                                 </Typography>
-                                <br/>
-                                <Typography>
+                                <br />
+                                <Typography variant="body2">
                                     {steps[0].moreInfo2}
                                 </Typography>
                             </Box>
@@ -104,6 +112,38 @@ export default function FloatingDrawer() {
                                                 <Typography variant="body2">
                                                     {step.content}
                                                 </Typography>
+                                                {step.moreContent && (
+                                                    <>
+                                                        <br />
+                                                        <Typography variant="body2">
+                                                            {step.moreContent}
+                                                        </Typography>
+                                                    </>
+                                                )}
+                                                {step.moreContent2 && (
+                                                    <>
+                                                        <br />
+                                                        <Typography variant="body2">
+                                                            {step.moreContent2}
+                                                        </Typography>
+                                                    </>
+                                                )}
+                                                {step.moreContent3 && (
+                                                    <>
+                                                        <br />
+                                                        <Typography variant="body2">
+                                                            {step.moreContent3}
+                                                        </Typography>
+                                                    </>
+                                                )}
+                                                {step.moreContent4 && (
+                                                    <>
+                                                        <br />
+                                                        <Typography variant="body2">
+                                                            {step.moreContent4}
+                                                        </Typography>
+                                                    </>
+                                                )}
                                             </Box>
                                         )}
                                     </Step>
@@ -138,7 +178,6 @@ export default function FloatingDrawer() {
                     </Box>
                 </Box>
             </Drawer>
-
         </div>
     );
 }
