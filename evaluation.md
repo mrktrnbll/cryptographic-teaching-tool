@@ -26,12 +26,28 @@ User experience form. - [link to form](https://forms.office.com/e/ryAWPea0hx)
 - Do you think students will learn better from the navigation and naration feature?
     - Could this be changed to better facilitate learning?
 
+Restricted access to audio recording of focus group - [link](https://gla-my.sharepoint.com/:u:/g/personal/2482252t_student_gla_ac_uk/EfdyH3wdZohBiXDa7V3-1S4BldHrNQ0NgexWPChClQzxEQ?e=VUrV0e)
+
 <br>
+
+
 
 **If this was pilot study**
 - Key issues identified:
-    - 1    
-    - 2
+    1. Not initially clear that typing is how to input text.
+    2. Used sticky notes for remembering rotor configs
+    3. Rotor notch section
+        - Change guide walkthrough to tell users how many times to press a key to see a notch tick
+        - Not as "workoutable" to know that 17-18 for right notch, 5-6 for middle. Change ^
+    4. Give examples when encrypting, decrypting 
+        - notch numbers set, type in cypher text to get plain text.
+        - set rotors to ... type in a secret message pass configs to your friend.
+    - PLUGBOARD:
+    1. Not visualised! - create for evalulation.
+    2. No example.
+    3. Does not have realtime feedback like the rotors notch...
+    - REFLECTOR:
+    1. Wasn't implemented - as visualised or interactable object due to nature of reflector.
 
 
 
