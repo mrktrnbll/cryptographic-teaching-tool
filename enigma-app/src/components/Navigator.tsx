@@ -135,52 +135,47 @@ export default function FloatingDrawer() {
                                 {steps.slice(1).map((step, index) => (
                                     <Step key={step.label}>
                                         <StepLabel>{step.label}</StepLabel>
-                                        {activeStep === index && (
+                                        {activeStep === index + 1 && ( // Fix the index offset here
                                             <Box sx={{ mt: 1, mb: 1 }}>
-                                                <Typography variant="body2">
-                                                    {step.content}
-                                                </Typography>
+                                                <Typography variant="body2">{step.content}</Typography>
                                                 {step.moreContent && (
                                                     <>
                                                         <br />
-                                                        <Typography variant="body2">
-                                                            {step.moreContent}
-                                                        </Typography>
+                                                        <Typography variant="body2">{step.moreContent}</Typography>
                                                     </>
                                                 )}
                                                 {step.moreContent2 && (
                                                     <>
                                                         <br />
-                                                        <Typography variant="body2">
-                                                            {step.moreContent2}
-                                                        </Typography>
+                                                        <Typography variant="body2">{step.moreContent2}</Typography>
                                                     </>
                                                 )}
                                                 {step.moreContent3 && (
                                                     <>
                                                         <br />
-                                                        <Typography variant="body2">
-                                                            {step.moreContent3}
-                                                        </Typography>
+                                                        <Typography variant="body2">{step.moreContent3}</Typography>
                                                     </>
                                                 )}
                                                 {step.moreContent4 && (
                                                     <>
                                                         <br />
-                                                        <Typography variant="body2">
-                                                            {step.moreContent4}
-                                                        </Typography>
+                                                        <Typography variant="body2">{step.moreContent4}</Typography>
                                                     </>
                                                 )}
                                                 {step.moreContent5 && (
                                                     <>
                                                         <br />
-                                                        <Typography variant="body2">
-                                                            {step.moreContent5}
-                                                        </Typography>
+                                                        <Typography variant="body2">{step.moreContent5}</Typography>
                                                     </>
                                                 )}
-
+                                                {step.label === "Plugboard Settings" && (
+                                                    <Box>
+                                                        <br />
+                                                        <Button>
+                                                            Visualise Plugboard Settings
+                                                        </Button>
+                                                    </Box>
+                                                )}
                                             </Box>
                                         )}
                                     </Step>

@@ -32,6 +32,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     let rotors: { [s: string]: Mesh; };
     const plugsRef = useRef<THREE.Mesh | null>(null);
     const plugWiresRef = useRef<THREE.Mesh | null>(null);
+    const letterJourneyRef = useRef<>(null);
 
     const lampsRef = useRef();
     const rotorPlanesRef = useRef();
@@ -147,7 +148,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         }, 2000);
     }
 
-    function createTextPlane(textValue: number) {
+    function createTextPlane(textValue: number | string) {
         const size = 512;
         const canvas = document.createElement('canvas');
         canvas.width = size;
@@ -282,6 +283,69 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         return arrowDict
     }
 
+    function createDefaultRotorLetterPlanes(rotors) {
+        // Choose an offset that positions the letter slightly above the rotor number.
+        // Adjust these values as needed.
+        let LETTER_OFFSET_X = 0.045;
+        let LETTER_OFFSET_Y = -0.03;
+        let LETTER_OFFSET_Z = 0.01;
+        const newRotorLetterPlanes = {};
+
+        for (const [key, rotor] of Object.entries(rotors)) {
+            // Create a text plane with the desired letter (e.g., "A")
+            const letterPlane = createTextPlane("A");
+            if (!letterPlane) continue;
+
+            // Rotate if needed (similar to your rotor numbers)
+            letterPlane.rotation.z = THREE.MathUtils.degToRad(-90);
+
+            // Add the letter plane as a child of the rotor mesh
+            rotor.add(letterPlane);
+
+            // Position it so it appears above the number.
+            // Adjust the values to suit your scene's scale.
+            letterPlane.position.set(LETTER_OFFSET_X, LETTER_OFFSET_Y, LETTER_OFFSET_Z);
+
+            // Save reference if you need to update it later
+            newRotorLetterPlanes[key] = letterPlane;
+
+            LETTER_OFFSET_Y += 0.03;
+        }
+        return newRotorLetterPlanes;
+    }
+
+
+    function createJourneyModel(scene: THREE.Scene) {
+        const plugboardBoxGeometry = new THREE.BoxGeometry(0.7, 1.6, 4.7);
+        const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const plugboardBox = new THREE.Mesh(plugboardBoxGeometry, boxMaterial);
+
+        plugboardBox.position.set(-2.7, -0.1, 0);
+        scene.add(plugboardBox);
+
+        let zPostionDelimeter = 0.045;
+        const rotorLetters = {};
+        // for (let i = 0; i < 3; i++) {
+        //     const rotorBoxGeometry = new THREE.PlaneGeometry(0.4, 0.1, 0.2);
+        //     const rotorBox = new THREE.Mesh(rotorBoxGeometry, boxMaterial);
+        //
+        //     rotorBox.position.set(2.25, 1.25, zPostionDelimeter);
+        //
+        //     scene.add(rotorBox);
+        //     rotorLetters[`letter${i}`] = rotorBox;
+        //     zPostionDelimeter += -0.5;
+        // }
+        //
+        // for (let i = 0; i < 3; i++) {
+        //     const labelPlane = createTextPlane("A");
+        //     if (!labelPlane) return;
+        //
+        //     rotorLetters[`letter${i}`].add(labelPlane);
+        //     labelPlane.position.set(2, 2, 0);
+        // }
+        console.log(rotorLetters)
+    }
+
     useEffect(() => {
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(background);
@@ -312,6 +376,8 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 if (rotors) {
                     const newRotorPlanes: any = createDefaultRotorValuePlanes();
                     setRotorPlanes(newRotorPlanes);
+                    const rotorLetterPlanes: any = createDefaultRotorLetterPlanes(rotors);
+                    console.log(rotorLetterPlanes)
                 }
 
                 if (plugsRef && plugWiresRef) {
@@ -323,6 +389,8 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 setLoadingProgress(false);
 
                 enigmaMachineRef.current = createEnigmaModel();
+                //
+                // letterJourneyRef.current = createJourneyModel(scene)
 
             });
 
@@ -516,6 +584,7 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             }
         }
     }
+
 
     return (
         <div>
