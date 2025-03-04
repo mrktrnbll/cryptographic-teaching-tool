@@ -158,7 +158,9 @@ export default function EnigmaSettings({open, setOpen, animatePlugboard, enigmaM
                             <Typography variant="subtitle1">
                                 Rotor Settings
                             </Typography>
-                            ...
+                            <Typography variant="body2">
+                                Not Part Of Experiment...
+                            </Typography>
                         </Box>
                     </Box>
 
