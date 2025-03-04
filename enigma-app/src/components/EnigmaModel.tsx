@@ -292,59 +292,65 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
         const newRotorLetterPlanes = {};
 
         for (const [key, rotor] of Object.entries(rotors)) {
-            // Create a text plane with the desired letter (e.g., "A")
-            const letterPlane = createTextPlane("A");
+            const letterPlane = createTextPlane("T");
             if (!letterPlane) continue;
 
-            // Rotate if needed (similar to your rotor numbers)
             letterPlane.rotation.z = THREE.MathUtils.degToRad(-90);
-
-            // Add the letter plane as a child of the rotor mesh
             rotor.add(letterPlane);
-
-            // Position it so it appears above the number.
-            // Adjust the values to suit your scene's scale.
             letterPlane.position.set(LETTER_OFFSET_X, LETTER_OFFSET_Y, LETTER_OFFSET_Z);
-
-            // Save reference if you need to update it later
             newRotorLetterPlanes[key] = letterPlane;
-
             LETTER_OFFSET_Y += 0.03;
         }
+
+
+        const letterPlanePlugboard = createTextPlane("P");
+
+        newRotorLetterPlanes["rotor1"].add(letterPlanePlugboard);
+        letterPlanePlugboard.position.set(-0.003, -0.28, -0.008);
+        newRotorLetterPlanes["plugboard"] = letterPlanePlugboard;
+
+        letterPlanePlugboard.rotation.x = THREE.MathUtils.degToRad(90);
+
+        //
+        const letterPlaneReflector = createTextPlane("R");
+        //
+        newRotorLetterPlanes["rotor1"].add(letterPlaneReflector);
+        letterPlaneReflector.position.set(-0.08, -0.045, 0);
+        newRotorLetterPlanes["reflector"] = letterPlaneReflector;
+
         return newRotorLetterPlanes;
     }
 
-
-    function createJourneyModel(scene: THREE.Scene) {
-        const plugboardBoxGeometry = new THREE.BoxGeometry(0.7, 1.6, 4.7);
-        const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-        const plugboardBox = new THREE.Mesh(plugboardBoxGeometry, boxMaterial);
-
-        plugboardBox.position.set(-2.7, -0.1, 0);
-        scene.add(plugboardBox);
-
-        let zPostionDelimeter = 0.045;
-        const rotorLetters = {};
-        // for (let i = 0; i < 3; i++) {
-        //     const rotorBoxGeometry = new THREE.PlaneGeometry(0.4, 0.1, 0.2);
-        //     const rotorBox = new THREE.Mesh(rotorBoxGeometry, boxMaterial);
-        //
-        //     rotorBox.position.set(2.25, 1.25, zPostionDelimeter);
-        //
-        //     scene.add(rotorBox);
-        //     rotorLetters[`letter${i}`] = rotorBox;
-        //     zPostionDelimeter += -0.5;
-        // }
-        //
-        // for (let i = 0; i < 3; i++) {
-        //     const labelPlane = createTextPlane("A");
-        //     if (!labelPlane) return;
-        //
-        //     rotorLetters[`letter${i}`].add(labelPlane);
-        //     labelPlane.position.set(2, 2, 0);
-        // }
-        console.log(rotorLetters)
-    }
+    // function createReflectorAndPlugboardLetterPlane(scene: THREE.Scene) {
+    //     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    //
+    //     const plugboardBoxGeometry = new THREE.BoxGeometry(0.7, 1.6, 4.7);
+    //     const plugboardBox = new THREE.Mesh(plugboardBoxGeometry, boxMaterial);
+    //     plugboardBox.position.set(-2.7, -0.1, 0);
+    //     scene.add(plugboardBox);
+    //
+    //     const plugboardLetter = createTextPlane("P");
+    //     if (plugboardLetter) {
+    //         plugboardLetter.position.set(0, 0, 0.2);
+    //         plugboardLetter.rotation.set(0, 0, 0);
+    //         plugboardBox.add(plugboardLetter);
+    //     }
+    //
+    //     const reflectorBoxGeometry = new THREE.BoxGeometry(1, 0, 1);
+    //     const reflectorBox = new THREE.Mesh(reflectorBoxGeometry, boxMaterial);
+    //     reflectorBox.position.set(2, 2, 0);
+    //     scene.add(reflectorBox);
+    //
+    //     const reflectorLetter = createTextPlane("R");
+    //     if (reflectorLetter) {
+    //         reflectorLetter.rotation.z = THREE.MathUtils.degToRad(-90);
+    //         reflectorLetter.position.set(0, 0, 0.2);
+    //         reflectorLetter.rotation.set(0, 0, 0);
+    //         reflectorBox.add(reflectorLetter);
+    //     }
+    //
+    //     return [plugboardLetter, reflectorLetter];
+    // }
 
     useEffect(() => {
         const scene = new THREE.Scene();
@@ -389,9 +395,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                 setLoadingProgress(false);
 
                 enigmaMachineRef.current = createEnigmaModel();
-                //
-                // letterJourneyRef.current = createJourneyModel(scene)
-
             });
 
         const animate = () => {
