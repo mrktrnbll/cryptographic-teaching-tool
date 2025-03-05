@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import EnigmaModel from "../components/EnigmaModel";
 import Navigator from "../components/Navigator";
 import "../app/globals.css";
@@ -12,6 +12,7 @@ export default function Home() {
     const [camera, setCamera] = useState(null);
     const [renderer, setRenderer] = useState(null);
     const [controls, setControls] = useState(null);
+    const [visualiseLetter, setVisualiseLetter] = useState(false);
 
     useEffect(() => {
         // Only run on the client (after mount)
@@ -43,18 +44,17 @@ export default function Home() {
         controls.enabled = true;
     }, [camera, controls]);
 
-    // Render a fallback while the camera/renderer/controls haven't been initialized
-    if (!camera || !renderer || !controls) {
-        return null; // Alternatively, render a loading indicator
+   if (!camera || !renderer || !controls) {
+        return null;
     }
 
     return (
         <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
             <div style={{ position: "absolute", width: "100%", height: "100%" }}>
-                <EnigmaModel camera={camera} controls={controls} renderer={renderer} />
+                <EnigmaModel camera={camera} controls={controls} renderer={renderer} visualiseLetter={visualiseLetter}/>
             </div>
             <div style={{ position: "absolute", top: 0, left: 0, zIndex: 100 }}>
-                <Navigator />
+                <Navigator setVisualiseLetter={() => setVisualiseLetter()}/>
             </div>
         </div>
     );

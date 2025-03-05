@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Drawer, Box, Typography, Divider, Button, Stepper, Step, StepLabel } from "@mui/material";
 
-export default function FloatingDrawer() {
+export default function Navigator(setVisualiseLetter) {
     const [open, setOpen] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
     const [walkthroughStarted, setWalkthroughStarted] = useState(false);
@@ -76,6 +76,10 @@ export default function FloatingDrawer() {
     const startWalkthrough = () => {
         setWalkthroughStarted(true);
     };
+
+    const handlePlugboardVisualisation = (bool) => {
+        setVisualiseLetter(true);
+    }
 
     return (
         <div style={{ zIndex: 9999, position: "relative", minHeight: "80vh" }}>
@@ -171,7 +175,7 @@ export default function FloatingDrawer() {
                                                 {step.label === "Plugboard Settings" && (
                                                     <Box>
                                                         <br />
-                                                        <Button>
+                                                        <Button onClick={() => handlePlugboardVisualisation(true)}>
                                                             Visualise Plugboard Settings
                                                         </Button>
                                                     </Box>

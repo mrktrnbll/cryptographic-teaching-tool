@@ -20,7 +20,13 @@ import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import {Plugboard} from "../../src/components/engima-parts/Plugboard";
 
 
-export default function EnigmaModel({camera, controls, renderer}: {camera: THREE.PerspectiveCamera, controls: OrbitControls, renderer: THREE.WebGLRenderer}) {
+export default function EnigmaModel({camera, controls, renderer, visualiseLetter}: {
+    camera: THREE.PerspectiveCamera,
+    controls: OrbitControls,
+    renderer: THREE.WebGLRenderer,
+    useState: boolean,
+    visualiseLetter?: boolean
+}) {
     const [loadingProgress, setLoadingProgress] = useState(true);
     const [arrows, setArrows] = useState();
     const [rotorPlanes, setRotorPlanes] = useState();
@@ -284,8 +290,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
     }
 
     function createDefaultRotorLetterPlanes(rotors) {
-        // Choose an offset that positions the letter slightly above the rotor number.
-        // Adjust these values as needed.
         let LETTER_OFFSET_X = 0.045;
         let LETTER_OFFSET_Y = -0.03;
         let LETTER_OFFSET_Z = 0.01;
@@ -302,7 +306,6 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
             LETTER_OFFSET_Y += 0.03;
         }
 
-
         const letterPlanePlugboard = createTextPlane("P");
 
         newRotorLetterPlanes["rotor1"].add(letterPlanePlugboard);
@@ -311,46 +314,14 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
 
         letterPlanePlugboard.rotation.x = THREE.MathUtils.degToRad(90);
 
-        //
         const letterPlaneReflector = createTextPlane("R");
-        //
+
         newRotorLetterPlanes["rotor1"].add(letterPlaneReflector);
         letterPlaneReflector.position.set(-0.08, -0.045, 0);
         newRotorLetterPlanes["reflector"] = letterPlaneReflector;
 
         return newRotorLetterPlanes;
     }
-
-    // function createReflectorAndPlugboardLetterPlane(scene: THREE.Scene) {
-    //     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    //
-    //     const plugboardBoxGeometry = new THREE.BoxGeometry(0.7, 1.6, 4.7);
-    //     const plugboardBox = new THREE.Mesh(plugboardBoxGeometry, boxMaterial);
-    //     plugboardBox.position.set(-2.7, -0.1, 0);
-    //     scene.add(plugboardBox);
-    //
-    //     const plugboardLetter = createTextPlane("P");
-    //     if (plugboardLetter) {
-    //         plugboardLetter.position.set(0, 0, 0.2);
-    //         plugboardLetter.rotation.set(0, 0, 0);
-    //         plugboardBox.add(plugboardLetter);
-    //     }
-    //
-    //     const reflectorBoxGeometry = new THREE.BoxGeometry(1, 0, 1);
-    //     const reflectorBox = new THREE.Mesh(reflectorBoxGeometry, boxMaterial);
-    //     reflectorBox.position.set(2, 2, 0);
-    //     scene.add(reflectorBox);
-    //
-    //     const reflectorLetter = createTextPlane("R");
-    //     if (reflectorLetter) {
-    //         reflectorLetter.rotation.z = THREE.MathUtils.degToRad(-90);
-    //         reflectorLetter.position.set(0, 0, 0.2);
-    //         reflectorLetter.rotation.set(0, 0, 0);
-    //         reflectorBox.add(reflectorLetter);
-    //     }
-    //
-    //     return [plugboardLetter, reflectorLetter];
-    // }
 
     useEffect(() => {
         const scene = new THREE.Scene();
@@ -602,6 +573,15 @@ export default function EnigmaModel({camera, controls, renderer}: {camera: THREE
                     color: "black",
                     zIndex: 1
                 }}>Loading! Hang tight :)</h3>}
+                {visualiseLetter && <h3 style={{
+                    position: "absolute",
+                    width: '15vw',
+                    height: '10vw',
+                    top: "50dvh",
+                    left: "46dvw",
+                    color: "black",
+                    zIndex: 1
+                }}>Visualising letter</h3>}
             </div>
             <div>
                 <Button
