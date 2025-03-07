@@ -54,7 +54,7 @@ export default function Home() {
                 <EnigmaModel camera={camera} controls={controls} renderer={renderer} visualiseLetter={visualiseLetter}/>
             </div>
             <div style={{ position: "absolute", top: 0, left: 0, zIndex: 100 }}>
-                <Navigator setVisualiseLetter={() => setVisualiseLetter()}/>
+                <Navigator setVisualiseLetter={setVisualiseLetter}/>
             </div>
         </div>
     );
