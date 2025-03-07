@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import { Drawer, Box, Typography, Divider, Button, Stepper, Step, StepLabel } from "@mui/material";
 
-export default function Navigator(setVisualiseLetter) {
+export default function Navigator({setVisualiseLetter}) {
     const [open, setOpen] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
     const [walkthroughStarted, setWalkthroughStarted] = useState(false);
+    const [visualiseFlip, setVisualiseFlip] = useState(false);
 
     const steps = [
         {
@@ -77,8 +78,9 @@ export default function Navigator(setVisualiseLetter) {
         setWalkthroughStarted(true);
     };
 
-    const handlePlugboardVisualisation = (bool) => {
-        setVisualiseLetter(true);
+    const handlePlugboardVisualisation = () => {
+        setVisualiseLetter(!visualiseFlip);
+        setVisualiseFlip(!visualiseFlip);
     }
 
     return (

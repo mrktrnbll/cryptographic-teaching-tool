@@ -296,7 +296,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
         const newRotorLetterPlanes = {};
 
         for (const [key, rotor] of Object.entries(rotors)) {
-            const letterPlane = createTextPlane("T");
+            const letterPlane = createTextPlane("");
             if (!letterPlane) continue;
 
             letterPlane.rotation.z = THREE.MathUtils.degToRad(-90);
@@ -306,7 +306,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
             LETTER_OFFSET_Y += 0.03;
         }
 
-        const letterPlanePlugboard = createTextPlane("P");
+        const letterPlanePlugboard = createTextPlane("");
 
         newRotorLetterPlanes["rotor1"].add(letterPlanePlugboard);
         letterPlanePlugboard.position.set(-0.003, -0.28, -0.008);
@@ -314,7 +314,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
 
         letterPlanePlugboard.rotation.x = THREE.MathUtils.degToRad(90);
 
-        const letterPlaneReflector = createTextPlane("R");
+        const letterPlaneReflector = createTextPlane("");
 
         newRotorLetterPlanes["rotor1"].add(letterPlaneReflector);
         letterPlaneReflector.position.set(-0.08, -0.045, 0);
@@ -573,15 +573,6 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
                     color: "black",
                     zIndex: 1
                 }}>Loading! Hang tight :)</h3>}
-                {visualiseLetter && <h3 style={{
-                    position: "absolute",
-                    width: '15vw',
-                    height: '10vw',
-                    top: "50dvh",
-                    left: "46dvw",
-                    color: "black",
-                    zIndex: 1
-                }}>Visualising letter</h3>}
             </div>
             <div>
                 <Button
@@ -626,6 +617,34 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
                     <SettingsInputComponentIcon />
                 </Button>
             </div>
+
+            {!visualiseLetter &&
+                <>
+                    <div style={{
+                        position: "absolute",
+                        display: "flex",
+                        bottom: "10%",
+                        width: "100%",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 100
+                    }}>
+                        <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: "10px"
+                        }}>
+                            <Button variant="outlined">
+                                {"<"}
+                            </Button>
+                            <Button variant="outlined">
+                                {">"}
+                            </Button>
+                        </div>
+                    </div>
+                </>
+            }
 
             <div style={{position: 'absolute', top: 0, left: 0, zIndex: 100}}>
                 <EnigmaOutputs message={message} open={openNotes} setOpen={setOpenNotes}/>
