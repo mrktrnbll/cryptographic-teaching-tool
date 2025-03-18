@@ -31,6 +31,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
     const [loadingProgress, setLoadingProgress] = useState(true);
     const [arrows, setArrows] = useState();
     const [rotorPlanes, setRotorPlanes] = useState();
+    const [plugboardLetterPlanes, setPlugboardLetterPlanes] = useState();
     const [rotorValues, setRotorValues] = useState([1,1,1]);
     const enigmaMachineRef: MutableRefObject<EnigmaMachine|null>  = useRef<EnigmaMachine | null>(null);
     const message = useRef("");
@@ -355,6 +356,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
                     const newRotorPlanes: any = createDefaultRotorValuePlanes();
                     setRotorPlanes(newRotorPlanes);
                     const rotorLetterPlanes: any = createDefaultRotorLetterPlanes(rotors);
+                    setPlugboardLetterPlanes(rotorLetterPlanes);
                     console.log(rotorLetterPlanes)
                 }
 
@@ -578,15 +580,47 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
         }
     }
 
+    function handleNewLetterChange() {
+        if (letterJourneyRef.current && plugboardLetterPlanes) {
+            console.log(plugboardLetterPlanes)
+            if (letterJourneyRef.current.progress == 0) {
+                console.log("Updating plugboard letter", plugboardLetterPlanes["plugboard"])
+                updateTextOnPlane(plugboardLetterPlanes["plugboard"], letterJourneyRef.current.plugboardLetter);
+            } else if (letterJourneyRef.current.progress == 1) {
+                updateTextOnPlane(plugboardLetterPlanes["rotor1"], letterJourneyRef.current.rotor1Letter);
+            } else if (letterJourneyRef.current.progress == 2) {
+                updateTextOnPlane(plugboardLetterPlanes["rotor2"], letterJourneyRef.current.rotor2Letter);
+            } else if (letterJourneyRef.current.progress == 3) {
+                updateTextOnPlane(plugboardLetterPlanes["rotor3"], letterJourneyRef.current.rotor3Letter);
+            } else if (letterJourneyRef.current.progress == 4) {
+                updateTextOnPlane(plugboardLetterPlanes["reflector"], letterJourneyRef.current.reflectorLetter);
+            } else if (letterJourneyRef.current.progress == 5) {
+                updateTextOnPlane(plugboardLetterPlanes["rotor3"], letterJourneyRef.current.rotor3LetterBackward);
+            } else if (letterJourneyRef.current.progress == 6) {
+                updateTextOnPlane(plugboardLetterPlanes["rotor2"], letterJourneyRef.current.rotor2LetterBackward);
+            } else if (letterJourneyRef.current.progress == 7) {
+                updateTextOnPlane(plugboardLetterPlanes["rotor1"], letterJourneyRef.current.rotor1LetterBackward);
+            } else if (letterJourneyRef.current.progress == 8) {
+                updateTextOnPlane(plugboardLetterPlanes["plugboard"], letterJourneyRef.current.plugboardLetterBackward);
+            }
+        }
+        console.log("Updated letter planes", letterJourneyRef)
+    }
+
     function previousLetter() {
+        console.log("Previous letter")
         if (letterJourneyRef.current && letterJourneyRef.current.progress > 0) {
             letterJourneyRef.current.progress -= 1;
-            letterJourneyRef.current
+            handleNewLetterChange();
         }
     }
 
     function nextLetter() {
-
+        console.log("Next letter")
+        if (letterJourneyRef.current && letterJourneyRef.current.progress < 8) {
+            letterJourneyRef.current.progress += 1;
+            handleNewLetterChange();
+        }
     }
 
     return (
@@ -666,13 +700,13 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
                         }}>
                             <Button
                                 variant="outlined"
-                                onClick={previousLetter()}
+                                onClick={previousLetter}
                             >
                                 {"<"}
                             </Button>
                             <Button
                                 variant="outlined"
-                                onClick={nextLetter()}
+                                onClick={nextLetter}
                             >
                                 {">"}
                             </Button>
