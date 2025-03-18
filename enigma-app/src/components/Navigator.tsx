@@ -23,6 +23,7 @@ export default function Navigator({setVisualiseLetter}) {
             moreContent2: "Once you have done that open the notepad at the bottom of your screen... You are now ready to type your secret message! - use spaces and letters, nothing else works on the enigma.",
             moreContent3: "The notepad will now have some nonsense text... but don't worry! This is actually just cypher text, and we have the key to decrypt it.",
             moreContent4: "Using red and green arrows near the rotor's numbers, you can change the rotor positions to the same values you remembered from before encrypting your message. Once done, type the cypher text into the enigma and see if you can decrypt it!",
+            moreContent5: "EVEN MORE HELP IF YOU NEED IT... Set rotor to 1, 1 and 1. Then type in HELLO WORLD. In the note pad menu you should see the cipher text - PPZST CJXON. Then if you decrease the right most rotr by pressing the red arrow to set it back to 1, 1, 1 and type in PPZST CJXON you should see HELLO WORLD! Nice job.",
         },
         {
             label: 'Rotor Mechanics',
@@ -53,7 +54,8 @@ export default function Navigator({setVisualiseLetter}) {
         },
         {
             label: "Conclusion",
-            content: "???",
+            content: "In general, we have seen the reciprocal nature of the enigma machine; decryption is the same as encryption. We have also seen the importance of the rotors in the encryption process and in adding complexity.",
+            moreContent: "We also noticed how the setting of the enigma machine are similar in nature to private keys of modern day encryption. Learning this we discover that keeping aspects of you algorithm secret and relying on this does not ensure security.",
         }
     ];
 
