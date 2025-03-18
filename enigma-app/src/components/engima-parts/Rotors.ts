@@ -49,6 +49,7 @@ export class Rotor {
     runLetterThroughRotor(
         index: string | number,
         forward: boolean = true,
+        letterReturn: boolean = false
     ): string {
         if (typeof index === "string" && index.length === 1) {
             index = ALPHABET.indexOf(index.toUpperCase());
@@ -59,7 +60,9 @@ export class Rotor {
         const outputLetter = wiring.charAt((Number(index) + this.offset) % 26);
         const outputIndex = ((ALPHABET.indexOf(outputLetter) - this.offset) % 26 + 26) % 26;
 
-        if (this.nextRotor && forward) {
+        if (letterReturn) {
+            return ALPHABET[outputIndex];
+        } else if (this.nextRotor && forward) {
             return this.nextRotor.runLetterThroughRotor(outputIndex, forward);
         } else if (this.previousRotor && !forward) {
             return this.previousRotor.runLetterThroughRotor(outputIndex, forward);

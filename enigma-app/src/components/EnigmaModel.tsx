@@ -18,6 +18,7 @@ import EnigmaSettings from "../../src/components/EnigmaSettings";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import {Plugboard} from "../../src/components/engima-parts/Plugboard";
+import {reflectLetter} from "@/components/engima-parts/Reflector";
 
 
 export default function EnigmaModel({camera, controls, renderer, visualiseLetter}: {
@@ -392,54 +393,72 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
         const handleKeyDown = (event: KeyboardEvent) => {
             const pressedLetter = event.key.toUpperCase();
 
-            if (enigmaMachineRef.current) {
-                if (openSettings) {
-                    return;
-                }
-                if (!ALPHABET.includes(pressedLetter)) {
-                    if (pressedLetter === " ") {
-                        event.preventDefault();
-                        message.current += " ";
-                    } else {
-                        handleClickToOpen();
+            if (visualiseLetter) {
+                // might need to create copy of enigma - can't remember where it stores state...
+                enigmaMachineRef.current.rotateRotors();
+                letterJourneyRef.current = {"unchangedLetter": pressedLetter, "progress": 0};
+                letterJourneyRef.current["plugboardLetter"] = enigmaMachineRef.current.plugboard.runLetterThroughPlugboard(pressedLetter);
+                letterJourneyRef.current["rotor1Letter"] = enigmaMachineRef.current.rotors[0].runLetterThroughRotor(letterJourneyRef.current.plugboardLetter, true, true);
+                letterJourneyRef.current["rotor2Letter"] = enigmaMachineRef.current.rotors[1].runLetterThroughRotor(letterJourneyRef.current.rotor1Letter, true, true);
+                letterJourneyRef.current["rotor3Letter"] = enigmaMachineRef.current.rotors[2].runLetterThroughRotor(letterJourneyRef.current.rotor2Letter, true, true);
+                letterJourneyRef.current["reflectorLetter"] = reflectLetter(letterJourneyRef.current.rotor3Letter);
+                letterJourneyRef.current["rotor3LetterBackward"] = enigmaMachineRef.current.rotors[2].runLetterThroughRotor(letterJourneyRef.current.reflectorLetter, false, true);
+                letterJourneyRef.current["rotor2LetterBackward"] = enigmaMachineRef.current.rotors[1].runLetterThroughRotor(letterJourneyRef.current.rotor3LetterBackward, false, true);
+                letterJourneyRef.current["rotor1LetterBackward"] = enigmaMachineRef.current.rotors[0].runLetterThroughRotor(letterJourneyRef.current.rotor2LetterBackward, false, true);
+                letterJourneyRef.current["plugboardLetterBackward"] = enigmaMachineRef.current.plugboard.runLetterThroughPlugboard(letterJourneyRef.current.rotor1LetterBackward);
+                console.log(letterJourneyRef.current)
+                console.log("Visualising letter journey");
+                return;
+            } else {
+                if (enigmaMachineRef.current) {
+                    if (openSettings) {
+                        return;
                     }
-                    return;
+                    if (!ALPHABET.includes(pressedLetter)) {
+                        if (pressedLetter === " ") {
+                            event.preventDefault();
+                            message.current += " ";
+                        } else {
+                            handleClickToOpen();
+                        }
+                        return;
+                    }
+                    const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
+
+                    if (lampsRef.current && lampsRef.current[encryptedLetter]) {
+                        lightUpLamp(lampsRef.current[encryptedLetter]);
+                    }
+
+                    const updatedRotors = enigmaMachineRef.current.rotors;
+
+                    if (rotorPlanesRef.current) {
+                        updateTextOnPlane(
+                            (rotorPlanesRef.current as any).rotor1,
+                            ALPHABET.indexOf(updatedRotors[0].window) + 1
+                        );
+                        updateTextOnPlane(
+                            (rotorPlanesRef.current as any).rotor2,
+                            ALPHABET.indexOf(updatedRotors[1].window) + 1
+                        );
+                        updateTextOnPlane(
+                            (rotorPlanesRef.current as any).rotor3,
+                            ALPHABET.indexOf(updatedRotors[2].window) + 1
+                        );
+                    }
+
+                    setRotorValues([
+                        updatedRotors[0].offset,
+                        updatedRotors[1].offset,
+                        updatedRotors[2].offset,
+                    ]);
+                    message.current += encryptedLetter;
                 }
-                const encryptedLetter = enigmaMachineRef.current.runLetterThroughMachine(pressedLetter);
-
-                if (lampsRef.current && lampsRef.current[encryptedLetter]) {
-                    lightUpLamp(lampsRef.current[encryptedLetter]);
-                }
-
-                const updatedRotors = enigmaMachineRef.current.rotors;
-
-                if (rotorPlanesRef.current) {
-                    updateTextOnPlane(
-                        (rotorPlanesRef.current as any).rotor1,
-                        ALPHABET.indexOf(updatedRotors[0].window) + 1
-                    );
-                    updateTextOnPlane(
-                        (rotorPlanesRef.current as any).rotor2,
-                        ALPHABET.indexOf(updatedRotors[1].window) + 1
-                    );
-                    updateTextOnPlane(
-                        (rotorPlanesRef.current as any).rotor3,
-                        ALPHABET.indexOf(updatedRotors[2].window) + 1
-                    );
-                }
-
-                setRotorValues([
-                    updatedRotors[0].offset,
-                    updatedRotors[1].offset,
-                    updatedRotors[2].offset,
-                ]);
-                message.current += encryptedLetter;
             }
         };
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [openSettings, openNotes]);
+    }, [openSettings, openNotes, visualiseLetter]);
 
     useEffect(() => {
         const raycaster = new THREE.Raycaster();
@@ -559,11 +578,21 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
         }
     }
 
+    function previousLetter() {
+        if (letterJourneyRef.current && letterJourneyRef.current.progress > 0) {
+            letterJourneyRef.current.progress -= 1;
+            letterJourneyRef.current
+        }
+    }
+
+    function nextLetter() {
+
+    }
 
     return (
         <div>
             <div ref={containerRef}
-                 style={{width: '100vw', height: '100vh'}}>
+                style={{width: '100vw', height: '100vh'}}>
                 {loadingProgress && <h3 style={{
                     position: "absolute",
                     width: '15vw',
@@ -618,7 +647,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
                 </Button>
             </div>
 
-            {!visualiseLetter &&
+            {visualiseLetter &&
                 <>
                     <div style={{
                         position: "absolute",
@@ -635,10 +664,16 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
                             flexDirection: "row",
                             gap: "10px"
                         }}>
-                            <Button variant="outlined">
+                            <Button
+                                variant="outlined"
+                                onClick={previousLetter()}
+                            >
                                 {"<"}
                             </Button>
-                            <Button variant="outlined">
+                            <Button
+                                variant="outlined"
+                                onClick={nextLetter()}
+                            >
                                 {">"}
                             </Button>
                         </div>
