@@ -202,7 +202,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
         return newRotorPlanes
     }
 
-    function updateTextOnPlane(plane: any, newRotorValue: number) {
+    function updateTextOnPlane(plane: any, newRotorValue: number | string) {
         const material = plane.material;
         const texture = material.map;
         const canvas = texture.image;
@@ -398,7 +398,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
             if (visualiseLetter) {
                 // might need to create copy of enigma - can't remember where it stores state...
                 enigmaMachineRef.current.rotateRotors();
-                letterJourneyRef.current = {"unchangedLetter": pressedLetter, "progress": 0};
+                letterJourneyRef.current = {"unchangedLetter": pressedLetter, "progress": -1};
                 letterJourneyRef.current["plugboardLetter"] = enigmaMachineRef.current.plugboard.runLetterThroughPlugboard(pressedLetter);
                 letterJourneyRef.current["rotor1Letter"] = enigmaMachineRef.current.rotors[0].runLetterThroughRotor(letterJourneyRef.current.plugboardLetter, true, true);
                 letterJourneyRef.current["rotor2Letter"] = enigmaMachineRef.current.rotors[1].runLetterThroughRotor(letterJourneyRef.current.rotor1Letter, true, true);
@@ -580,8 +580,17 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
         }
     }
 
+    function removeAllLettersFromPassthroughCanvas() {
+        if (plugboardLetterPlanes) {
+            for (const plane of Object.values(plugboardLetterPlanes)) {
+                updateTextOnPlane(plane, "");
+            }
+        }
+    }
+
     function handleNewLetterChange() {
         if (letterJourneyRef.current && plugboardLetterPlanes) {
+            removeAllLettersFromPassthroughCanvas();
             console.log(plugboardLetterPlanes)
             if (letterJourneyRef.current.progress == 0) {
                 console.log("Updating plugboard letter", plugboardLetterPlanes["plugboard"])
