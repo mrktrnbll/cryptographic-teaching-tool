@@ -179,7 +179,7 @@ export default function Navigator({setVisualiseLetter}) {
                                                 {step.label === "Plugboard Settings" && (
                                                     <Box>
                                                         <br />
-                                                        <Button onClick={() => handlePlugboardVisualisation(true)}>
+                                                        <Button onClick={() => handlePlugboardVisualisation()}>
                                                             Visualise Plugboard Settings
                                                         </Button>
                                                     </Box>
