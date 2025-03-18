@@ -25,7 +25,6 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
     camera: THREE.PerspectiveCamera,
     controls: OrbitControls,
     renderer: THREE.WebGLRenderer,
-    useState: boolean,
     visualiseLetter?: boolean
 }) {
     const [loadingProgress, setLoadingProgress] = useState(true);
@@ -40,7 +39,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
     let rotors: { [s: string]: Mesh; };
     const plugsRef = useRef<THREE.Mesh | null>(null);
     const plugWiresRef = useRef<THREE.Mesh | null>(null);
-    const letterJourneyRef = useRef<>(null);
+    const letterJourneyRef = useRef<object | null>(null);
 
     const lampsRef = useRef();
     const rotorPlanesRef = useRef();
@@ -302,7 +301,7 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
             if (!letterPlane) continue;
 
             letterPlane.rotation.z = THREE.MathUtils.degToRad(-90);
-            rotor.add(letterPlane);
+            (rotor as any).add(letterPlane);
             letterPlane.position.set(LETTER_OFFSET_X, LETTER_OFFSET_Y, LETTER_OFFSET_Z);
             newRotorLetterPlanes[key] = letterPlane;
             LETTER_OFFSET_Y += 0.03;
@@ -400,13 +399,29 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
                 enigmaMachineRef.current.rotateRotors();
                 letterJourneyRef.current = {"unchangedLetter": pressedLetter, "progress": -1};
                 letterJourneyRef.current["plugboardLetter"] = enigmaMachineRef.current.plugboard.runLetterThroughPlugboard(pressedLetter);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["rotor1Letter"] = enigmaMachineRef.current.rotors[0].runLetterThroughRotor(letterJourneyRef.current.plugboardLetter, true, true);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["rotor2Letter"] = enigmaMachineRef.current.rotors[1].runLetterThroughRotor(letterJourneyRef.current.rotor1Letter, true, true);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["rotor3Letter"] = enigmaMachineRef.current.rotors[2].runLetterThroughRotor(letterJourneyRef.current.rotor2Letter, true, true);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["reflectorLetter"] = reflectLetter(letterJourneyRef.current.rotor3Letter);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["rotor3LetterBackward"] = enigmaMachineRef.current.rotors[2].runLetterThroughRotor(letterJourneyRef.current.reflectorLetter, false, true);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["rotor2LetterBackward"] = enigmaMachineRef.current.rotors[1].runLetterThroughRotor(letterJourneyRef.current.rotor3LetterBackward, false, true);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["rotor1LetterBackward"] = enigmaMachineRef.current.rotors[0].runLetterThroughRotor(letterJourneyRef.current.rotor2LetterBackward, false, true);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 letterJourneyRef.current["plugboardLetterBackward"] = enigmaMachineRef.current.plugboard.runLetterThroughPlugboard(letterJourneyRef.current.rotor1LetterBackward);
                 console.log(letterJourneyRef.current)
                 console.log("Visualising letter journey");
@@ -592,24 +607,60 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
         if (letterJourneyRef.current && plugboardLetterPlanes) {
             removeAllLettersFromPassthroughCanvas();
             console.log(plugboardLetterPlanes)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             if (letterJourneyRef.current.progress == 0) {
                 console.log("Updating plugboard letter", plugboardLetterPlanes["plugboard"])
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["plugboard"], letterJourneyRef.current.plugboardLetter);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 1) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["rotor1"], letterJourneyRef.current.rotor1Letter);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 2) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["rotor2"], letterJourneyRef.current.rotor2Letter);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 3) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["rotor3"], letterJourneyRef.current.rotor3Letter);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 4) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["reflector"], letterJourneyRef.current.reflectorLetter);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 5) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["rotor3"], letterJourneyRef.current.rotor3LetterBackward);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 6) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["rotor2"], letterJourneyRef.current.rotor2LetterBackward);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 7) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["rotor1"], letterJourneyRef.current.rotor1LetterBackward);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
             } else if (letterJourneyRef.current.progress == 8) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 updateTextOnPlane(plugboardLetterPlanes["plugboard"], letterJourneyRef.current.plugboardLetterBackward);
             }
         }
@@ -618,7 +669,11 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
 
     function previousLetter() {
         console.log("Previous letter")
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         if (letterJourneyRef.current && letterJourneyRef.current.progress > 0) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             letterJourneyRef.current.progress -= 1;
             handleNewLetterChange();
         }
@@ -626,7 +681,11 @@ export default function EnigmaModel({camera, controls, renderer, visualiseLetter
 
     function nextLetter() {
         console.log("Next letter")
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         if (letterJourneyRef.current && letterJourneyRef.current.progress < 8) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             letterJourneyRef.current.progress += 1;
             handleNewLetterChange();
         }
