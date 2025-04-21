@@ -7,6 +7,9 @@ The idea of the project was to create and test a new 3D visualisation tool that 
 ### Requirements
 The key requirement to get started building or developing with this project is [pnpm](https://pnpm.io/) a node package manager. It was used throught the development of this project and no other package managers have been tested or used so I cannot guarantee that any others would work without issue. **Please install this on you machine before continuing.**
 
+**DUE TO MAX UPLOAD SIZE OF MOODLE SUBMISSION** - you will need to add the enigma 3D model asset to the ```enigma-app/public/lamp_changed``` folder. The folder **must** be named ```lamp_changed``` as it is referenced as such in the codebase. It is a static file that is not changeable by users so this is not a "hardcoded" value by definition - *I think*.
+You can access and download this folder form the github repo itself [here](https://github.com/mrktrnbll/cryptographic-teaching-tool/tree/main/enigma-app/public/lamp_changed)
+
 ## Build instructions
 
 Fistly you should run ```pnpm install``` to ensure you have all project dependencies installed.

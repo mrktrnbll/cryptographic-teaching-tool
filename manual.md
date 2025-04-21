@@ -1,0 +1,3 @@
+The software is very much guided by the walkthrough sheet. A manual.md file is not exactly needed for this project, none the less:
+
+On loading the page the best place to start is to interact and explore with the 3D model shown on screen. Secondly press the button name "Show Tutorial" as this will give a guided walkthrough how to perform encryption as well as configure the enigma machine in some way. It is intended to be used as a stand alone learning tool and so explanations are either explained by the app itself.
